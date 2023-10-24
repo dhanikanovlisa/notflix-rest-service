@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:latest
+    env_file: .env
+    ports:
+      - 5433:5432
+    volumes:
+      -  ./db:/var/lib/postgres/data
+    networks:
+      - rest-api-postgres
+  rest-api:
+    build: .
+    ports:
+      - 8000:8000
+    env_file: .env
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+    networks:
+      - rest-api-postgres
+networks:
+  rest-api-postgres:
+    driver: bridge
