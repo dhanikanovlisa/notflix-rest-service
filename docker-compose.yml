@@ -1,7 +1,9 @@
 version: '3.3'
 services:
   db:
+    container_name: rest-db
     image: postgres:latest
+    restart: unless-stopped
     env_file: .env
     ports:
       - 5433:5432
@@ -9,17 +11,31 @@ services:
       -  ./db:/var/lib/postgres/data
     networks:
       - rest-api-postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 10
+      timeout: 5s
   rest-api:
+    container_name: rest-api
     build: .
     ports:
       - 8000:8000
     env_file: .env
     volumes:
-      - ./:/app
+      - ./migrations:/docker-entrypoint-initdb.d
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - rest-api-postgres
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: adminrest@test.com
+      PGADMIN_DEFAULT_PASSWORD: restpassword
+    ports:
+      - 8082:80
 networks:
   rest-api-postgres:
     driver: bridge
