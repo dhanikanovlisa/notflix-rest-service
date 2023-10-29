@@ -1,10 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../prisma';
 
-interface Genre {
-    genre_id: number;
-}
-
 export const createFilm = async (req: Request, res: Response) => {
     try {
         const { title, description, film_path, film_poster, film_header, date_release, duration, username, genres } = req.body;
@@ -30,7 +26,16 @@ export const createFilm = async (req: Request, res: Response) => {
             },
         });
 
-        res.status(201).json({ message: 'Film created successfully', film});
+        const filmId = film.film_id;
+
+        const filmGenre = await prisma.film_genre.createMany({
+            data: genres.map((genre: number) => ({
+                film_id: filmId,
+                genre_id: genre,
+            })),
+        });
+
+        res.status(201).json({ message: 'Film created successfully', film, filmGenre });
     } catch (error) {
         console.error('Error creating film:', error);
         res.status(500).json({ error: 'Internal server error' });
