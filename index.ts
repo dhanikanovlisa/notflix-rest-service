@@ -1,6 +1,7 @@
 import express from 'express';
 import prisma from './src/prisma';
 import seed from './seed';
+import { createFilm } from './src/film';
 
 const app = express();
 const port = process.env.PORT;
@@ -11,7 +12,15 @@ app.listen(port, () => {
   console.log(`Database url ${process.env.DATABASE_URL}`)
 });
 
+app.use(express.json());
+
 //Routes
 app.get('/', (_, res) => {
-  res.send(', World!');
+  res.send('Welcome To Notflix Rest Service');
+{/*  seed();
+  seed().then(() => {
+    console.log("Seed Completed");
+  })*/}
 });
+
+app.post('/create/film', createFilm);

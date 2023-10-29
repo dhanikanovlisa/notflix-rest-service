@@ -1,6 +1,59 @@
 import prisma from "./src/prisma";
 
 const seed = async () => {
+  interface userProps{
+    username: string;
+    last_name: string;
+    first_name: string;
+    password: string;
+    email: string;
+    phone_number: string;
+    photo_profile: string;
+    is_admin: boolean;
+  }
+  const users: userProps[] = [
+    {
+      username: 'admin',
+      last_name: "lisa",
+      first_name: "lisa",
+      password: 'admin',
+      email: 'admin@gmail.com',
+      phone_number: '08123456789',
+      photo_profile: 'pp.svg',
+      is_admin: true
+    },
+    {
+      username: 'user',
+      last_name: "uwu",
+      first_name: "sa",
+      password: 'user',
+      email: 'user@gmail.com',
+      phone_number: '08123456789',
+      photo_profile: 'pp.svg',
+      is_admin: false
+    }
+  ]
+
+  async function insertUser() {
+    for (const user of users) {
+      await prisma.user.create({
+        data: {
+          username: user.username,
+          last_name: user.last_name,
+          first_name: user.first_name,
+          password: user.password,
+          email: user.email,
+          phone_number: user.phone_number,
+          photo_profile: user.photo_profile,
+          is_admin: user.is_admin,
+        },
+      });
+    }
+  }
+
+  await insertUser().catch((e) => {
+    throw e;
+  });
   
   interface FilmGenre {
     name: string;
@@ -14,6 +67,7 @@ const seed = async () => {
     film_header: string;
     date_release: Date;
     duration: number;
+    user_id: number;
   }
 
   const genres: FilmGenre[] = [
@@ -43,7 +97,7 @@ const seed = async () => {
     for(const genre of genres){
       await prisma.genre.create({
         data:{
-          name: genre.name,
+          genre_name: genre.name,
         }
       })
     }
@@ -62,6 +116,7 @@ const seed = async () => {
       film_header: 'film1_header.jpg',
       date_release: new Date('2023-05-19'),
       duration: 142,
+      user_id: 2,
     },
     {
       title: 'Mission: Impossible - Dead Reckoning Part One',
@@ -71,6 +126,7 @@ const seed = async () => {
       film_header: 'film2_header.jpg',
       date_release: new Date('2023-07-12'),
       duration: 164,
+      user_id: 2,
     },
     {
       title: 'The Shawshank Redemption',
@@ -80,6 +136,7 @@ const seed = async () => {
       film_header: 'film4_header.jpg',
       date_release: new Date('1994-09-23'),
       duration: 142,
+      user_id: 2,
     },
     {
       title: 'The Dark Knight',
@@ -89,6 +146,7 @@ const seed = async () => {
       film_header: 'film4_header.jpg',
       date_release: new Date('2008-07-18'),
       duration: 152,
+      user_id: 2,
     },
     {
       title: 'The Matrix',
@@ -98,6 +156,7 @@ const seed = async () => {
       film_header: 'film5_header.jpg',
       date_release: new Date('1999-03-31'),
       duration: 136,
+      user_id: 2,
     },
     {
       title: 'Pulp Fiction',
@@ -107,6 +166,7 @@ const seed = async () => {
       film_header: 'film6_header.jpg',
       date_release: new Date('1994-10-14'),
       duration: 154,
+      user_id: 2,
     },
     {
       title: 'The God Father',
@@ -116,6 +176,7 @@ const seed = async () => {
       film_header: 'film7_header.jpg',
       date_release: new Date('1972-03-24'),
       duration: 175,
+      user_id: 2,
     },
     {
       title: 'Forrest Gump',
@@ -125,6 +186,7 @@ const seed = async () => {
       film_header: 'film8_header.jpg',
       date_release:new Date('1994-07-06'),
       duration: 142,
+      user_id: 2,
     },
     {
       title: 'Fight Club',
@@ -134,6 +196,7 @@ const seed = async () => {
       film_header: 'film9_header.jpg',
       date_release: new Date('1999-10-15'),
       duration: 139,
+      user_id: 2,
     },
   ];
 
@@ -149,6 +212,7 @@ const seed = async () => {
           film_header: film.film_header,
           date_release: film.date_release,
           duration: film.duration,
+          id_user: film.user_id,
         }
       })
     }
