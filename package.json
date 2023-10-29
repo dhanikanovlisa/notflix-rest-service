@@ -1,19 +1,21 @@
 {
-  "name": "tes",
+  "name": "notflix-rest-service",
   "version": "1.0.0",
-  "description": "",
+  "description": "Notflix rest service",
   "main": "index.js",
   "scripts": {
-    "dev": "node -r ts-node/register src/app.ts",
-    "start": "ts-node src/app.ts",
-    "build": "tsc"
+    "dev": "nodemon -L --config nodemon.json index.ts",
+    "start": "node dist/index",
+    "build": "tsc",
+    "build-start": "npm run build && npm run start"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "nodemon": "^3.0.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.20",
