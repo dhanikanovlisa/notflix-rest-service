@@ -3,6 +3,7 @@ import prisma from './src/prisma';
 import seed from './seed';
 import { createFilm } from './src/film';
 import { deleteFilm } from './src/film/deleteFilm';
+import { getFilmById } from './src/film/getFilm';
 
 const app = express();
 const port = process.env.PORT;
@@ -26,3 +27,4 @@ app.get('/', (_, res) => {
 
 app.post('/create/film', createFilm);
 app.delete('/delete/film/:id', deleteFilm);
+app.get('/get/film/:id', getFilmById);
