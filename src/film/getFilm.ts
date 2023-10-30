@@ -11,10 +11,16 @@ export const getFilmById = async (req: Request, res: Response) => {
             }
         })
 
+        const filmGenre = await prisma.film_genre.findMany({
+            where:{
+                film_id: Number(id)
+            }
+        })
+
         if(film === null){
             res.status(404).json({ error: 'Film not found' });
         } else {
-            res.status(200).json({ message: 'Film found', data: film });
+            res.status(200).json({ message: 'Film found', datafilm: film, datagenre: filmGenre });
         }
 
     } catch (error){

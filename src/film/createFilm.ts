@@ -35,7 +35,13 @@ export const createFilm = async (req: Request, res: Response) => {
             })),
         });
 
-        res.status(201).json({ message: 'Film created successfully', film, filmGenre });
+        const getGenre = await prisma.film_genre.findMany({
+            where: {
+                film_id: filmId,
+            },
+        })
+
+        res.status(201).json({ message: 'Film created successfully', film: film, genre: getGenre });
     } catch (error) {
         console.error('Error creating film:', error);
         res.status(500).json({ error: 'Internal server error' });
