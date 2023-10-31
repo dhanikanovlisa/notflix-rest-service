@@ -1,5 +1,14 @@
 import { Request, Response } from 'express';
 import prisma from "../prisma";
+export const getAllFilm = async(req:Request, res:Response) => {
+    try{
+        const allFilm = await prisma.film.findMany();
+        res.status(200).json({ message: 'All film', data: allFilm });
+    } catch (error){
+        console.error('Error getting film:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
 
 export const getFilmById = async (req: Request, res: Response) => {
 
