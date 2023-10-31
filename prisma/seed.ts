@@ -1,4 +1,4 @@
-import prisma from "./src/prisma";
+import prisma from "../src/prisma";
 
 const seed = async () => {
   interface userProps{
@@ -275,4 +275,3 @@ const seed = async () => {
 };
 
 export default seed;
-
