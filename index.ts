@@ -3,6 +3,7 @@ import prisma from './src/prisma';
 import seed from './seed';
 import { createFilm, deleteFilm, getFilmById, editFilm } from './src/film';
 import { editProfile, getProfileById } from './src/profile';
+import { checkUsername } from './src/user';
 
 const app = express();
 const port = process.env.PORT;
@@ -18,10 +19,10 @@ app.use(express.json());
 //Routes
 app.get('/', (_, res) => {
   res.send('Welcome To Notflix Rest Service');
-{/*  seed();
-  seed().then(() => {
-    console.log("Seed Completed");
-  })*/}
+// {  seed();
+//   seed().then(() => {
+//     console.log("Seed Completed");
+//   })}
 });
 
 app.post('/create/film', createFilm);
@@ -31,3 +32,6 @@ app.put('/edit/film/:id', editFilm);
 
 app.get('/get/user/:id', getProfileById);
 app.put('/edit/user/:id', editProfile);
+
+app.get('/check/username/:username', checkUsername);
+// app.get('/check/email/:email', checkEmail);
