@@ -11,9 +11,9 @@ export const checkUsername = async (req: Request, res: Response) => {
         })
 
         if(user !== null){
-            res.status(404).json({ message: 'Username already exists' });
+            res.status(200).json({ code: 1, message: 'Username already exists' });
         } else {
-            res.status(200).json({ message: 'Username available' });
+            res.status(200).json({ code: 0, message: 'Username does not exists' });
         }
 
     } catch (error){

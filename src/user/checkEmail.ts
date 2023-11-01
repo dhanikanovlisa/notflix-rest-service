@@ -11,9 +11,9 @@ export const checkEmail = async (req: Request, res: Response) => {
         })
 
         if(user !== null){
-            res.status(404).json({ message: 'This email is already registered' });
+            res.status(200).json({ code: 1, message: 'This email is already registered' });
         } else {
-            res.status(200).json({ message: 'Email available' });
+            res.status(200).json({ code: 0, message: 'Email does not exists' });
         }
 
     } catch (error){
