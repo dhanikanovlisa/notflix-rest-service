@@ -1,3 +1,4 @@
 import { checkUsername} from "./checkUsername";
+import { checkEmail} from "./checkEmail";
 
-export { checkUsername };
+export { checkUsername, checkEmail };
