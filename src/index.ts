@@ -1,6 +1,7 @@
 import express from 'express';
 import { createFilm, deleteFilm, getFilmById, editFilm, getAllFilm } from './film';
 import { editProfile, getProfileById } from './profile';
+import { checkUsername } from './user';
 
 var cors = require('cors');
 const app = express();
@@ -28,7 +29,7 @@ app.delete('/delete/film/:id', deleteFilm);
 app.get('/get/film/:id', getFilmById);
 app.put('/edit/film/:id', editFilm);
 
-
-
 app.get('/get/user/:id', getProfileById);
 app.put('/edit/user/:id', editProfile);
+
+app.get('/check/username/:username', checkUsername);
