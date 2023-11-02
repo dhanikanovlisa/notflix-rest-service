@@ -11,7 +11,7 @@ app.use(cors())
 
 //Listen to port
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is askhjdhaskdjhs running on port ${port}`);
   console.log(`Database url ${process.env.DATABASE_URL}`)
 });
 

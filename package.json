@@ -4,9 +4,9 @@
   "description": "Notflix rest service",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev src/index.ts",
-    "build": "tsc",
-    "start": "npm run build && node dist/index.js"
+    "dev": "nodemon -L --exec ts-node ./src/index.ts",
+    "start": "node ./dist/src/index.js",
+    "build": "npx tsc"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
