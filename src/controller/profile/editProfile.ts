@@ -1,4 +1,4 @@
-import prisma from "../prisma"
+import prisma from "../../prisma/Prisma"
 import { Request, Response } from "express"
 
 export const editProfile = async(req: Request, res:Response) => {
