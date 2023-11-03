@@ -1,8 +1,7 @@
 import express from 'express';
-import { createFilm, deleteFilm, getFilmById, editFilm, getAllFilm } from './controller/film';
-import { editProfile, getProfileById } from './controller/profile';
-import { checkUsername, checkEmail, register, login } from './controller/user';
 import filmRouter from './routes/FilmRoutes';
+import profileRouter from './routes/ProfileRoute';
+import authRouter from './routes/AuthRoutes';
 
 var cors = require('cors');
 const app = express();
@@ -21,22 +20,11 @@ app.listen(port, () => {
 //Routes
 app.get('/', (_, res) => {
   res.send('Welcome To Notflix hi Rest Service');
-
-
 });
 
+/**Films */
 app.use('/films', filmRouter);
-
-// app.post('/create/film', createFilm);
-// app.delete('/delete/film/:id', deleteFilm);
-// app.get('/get/film/:id', getFilmById);
-// app.put('/edit/film/:id', editFilm);
-
-// app.get('/get/user/:id', getProfileById);
-// app.put('/edit/user/:id', editProfile);
-
-// app.get('/check/username/:username', checkUsername);
-// app.get('/check/email/:email', checkEmail);
-
-// app.post('/auth/register', register);
-// app.post('/auth/login', login);
+/**Profile */
+app.use('/profile', profileRouter);
+/**Auth */
+app.use('/auth', authRouter);

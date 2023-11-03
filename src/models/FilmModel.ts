@@ -2,16 +2,20 @@ import prisma from "../prisma/Prisma";
 import { Film } from "../interface";
 
 class FilmModel{
+
+    /**Return all film for PHP Web App */
     async getAllFilm(){
         return prisma.film.findMany();
     }
 
+    /**Return All Film By User Premium Id */
     async getAllFilmByUserId(id_user: number){
         return prisma.film.findMany({
             where: {id_user: id_user}
         })
     }
 
+    /**Return Film by Film Id and User Id */
     async getFilmByFilmId(film_id: number, id_user: number) {
         return prisma.film.findUnique({
             where: {
@@ -21,6 +25,7 @@ class FilmModel{
         });
     }
 
+    /**Create New Film */
     async createFilm(film: Film){
         const createdFilm = await prisma.film.create({
             data: {
@@ -38,6 +43,7 @@ class FilmModel{
         return createdFilm;
     }
 
+    /**Update Film */
     async updateFilm(film: Film){
         const updatedFilm = await prisma.film.update({
             where: {
@@ -49,6 +55,7 @@ class FilmModel{
         return updatedFilm;
     }
 
+    /**Delete Film */
     async deleteFilm(film_id: number){
         await prisma.film.delete({
             where:{
@@ -56,7 +63,6 @@ class FilmModel{
             }
         })
     }
-    
 
 }
 

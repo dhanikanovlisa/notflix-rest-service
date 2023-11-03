@@ -6,8 +6,8 @@ export interface User {
     password: string;
     email: string;
     phone_number: string;
-    photo_profile: string;
-    is_admin: boolean;
+    photo_profile?: string;
+    is_admin?: boolean;
 }
 
 export interface Film {
