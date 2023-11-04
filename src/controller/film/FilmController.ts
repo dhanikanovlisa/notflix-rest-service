@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import UserModel from '../../models/UserModel';
 import FilmModel from '../../models/FilmModel';
 import FilmGenreModel from '../../models/FilmGenreModel';
+import GenreModel from '../../models/GenreModel';
 import { Film } from '../../interface';
 
 class FilmController {
@@ -10,11 +11,13 @@ class FilmController {
     private filmModel: FilmModel;
     private userModel: UserModel;
     private filmGenreModel: FilmGenreModel;
+    private genreModel: GenreModel;
 
     constructor() {
         this.filmModel = new FilmModel();
         this.userModel = new UserModel();
         this.filmGenreModel = new FilmGenreModel();
+        this.genreModel = new GenreModel();
     }
 
     async getAllFilm(req: Request, res: Response) {
@@ -44,12 +47,35 @@ class FilmController {
         try {
             const { id } = req.params;
             const film = await this.filmModel.getFilmByFilmId(Number(id))
-            if(!film){
-                res.status(404).json({message: "Film Not Found"});
+            if (!film) {
+                res.status(404).json({ message: "Film Not Found" });
             } else {
                 const filmGenre = await this.filmGenreModel.getFilmGenreByFilmId(Number(id));
-                res.status(200).json({ message: 'Succes', data: film, genre: filmGenre });
+                const genrePromises = filmGenre.map(async (genre) => {
+                    const genreInfo = await this.genreModel.getGenreById(genre.genre_id);
+                    return genreInfo?.genre_name || '';
+                });
+
+                const genres = await Promise.all(genrePromises);
+
+                res.status(200).json({ message: 'Success', data: film, genre: genres });
             }
+        } catch (error) {
+            console.error('Error getting film:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    async tes(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const film = await this.filmModel.getFilmByFilmId(Number(id))
+            if (!film) {
+                res.status(404).json({ message: "Film Not Found" });
+            }
+            const filmGenre = await this.filmGenreModel.getFilmGenreByFilmId(Number(id));
+
+            res.status(200).json({ message: 'Success', data: film, genre: filmGenre });
         } catch (error) {
             console.error('Error getting film:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -103,7 +129,7 @@ class FilmController {
             if (!filmData) {
                 return res.status(404).json({ error: "Film not found" });
             }
-            
+
             const updatedTitle = this.checkAndUpdateField(title, filmData.title) ?? "";
             const updatedDescription = this.checkAndUpdateField(description, filmData.description) ?? "";
             const updatedFilmPath = this.checkAndUpdateField(film_path, filmData.film_path) ?? "";
@@ -111,7 +137,7 @@ class FilmController {
             const updatedFilmHeader = this.checkAndUpdateField(film_header, filmData.film_header) ?? "";
             const updatedDateRelease = (this.checkAndUpdateField(date_release, filmData.date_release));
             const updatedDuration = this.checkAndUpdateField(duration, filmData.duration);
-            
+
             const updated: Film = {
                 film_id: Number(id),
                 title: updatedTitle?.toString(),
@@ -124,13 +150,13 @@ class FilmController {
                 id_user: id_user
             }
 
-            if (genres && genres.length > 0){
+            if (genres && genres.length > 0) {
                 await this.filmGenreModel.deleteFilmGenre(Number(id));
-                await this.filmGenreModel.addFilmGenre(Number(id), genres);     
+                await this.filmGenreModel.addFilmGenre(Number(id), genres);
             }
 
             this.filmModel.updateFilm(updated);
-            res.status(200).json({ message: "Film updated successfully"});
+            res.status(200).json({ message: "Film updated successfully" });
         } catch (error) {
             console.error('Error getting film:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -138,7 +164,7 @@ class FilmController {
 
     }
 
-    checkAndUpdateField(newData: string | number | Date | undefined, existingData: string | number | Date){
+    checkAndUpdateField(newData: string | number | Date | undefined, existingData: string | number | Date) {
         if (newData === undefined || newData === null || newData === "") {
             return existingData;
         } else {
@@ -157,7 +183,7 @@ class FilmController {
             }
         }
     }
-    
+
 
     async deleteFilm(req: Request, res: Response) {
         try {
@@ -168,8 +194,8 @@ class FilmController {
             //     return res.status(404).json({ message: 'Double check the user id and film id' });
             // }
             const checkFilm = await this.filmModel.getFilmByFilmId(Number(id));
-            if(!checkFilm){
-                res.status(404).json({message: "Film Not Found"});
+            if (!checkFilm) {
+                res.status(404).json({ message: "Film Not Found" });
             } else {
                 this.filmGenreModel.deleteFilmGenre(Number(id));
                 this.filmModel.deleteFilm(Number(id));

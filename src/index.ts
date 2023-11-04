@@ -2,6 +2,7 @@ import express from 'express';
 import filmRouter from './routes/FilmRoutes';
 import profileRouter from './routes/ProfileRoute';
 import authRouter from './routes/AuthRoutes';
+import genreRouter from './routes/GenreRoutes';
 
 var cors = require('cors');
 const app = express();
@@ -24,6 +25,8 @@ app.get('/', (_, res) => {
 
 /**Films */
 app.use('/films', filmRouter);
+/**Genres */
+app.use('/genres', genreRouter);
 /**Profile */
 app.use('/profile', profileRouter);
 /**Auth */
