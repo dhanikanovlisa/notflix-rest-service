@@ -44,7 +44,12 @@ class FilmController {
         try {
             const { id } = req.params;
             const film = await this.filmModel.getFilmByFilmId(Number(id))
-            res.status(200).json({ message: 'Succes', data: film });
+            if(!film){
+                res.status(404).json({message: "Film Not Found"});
+            } else {
+                const filmGenre = await this.filmGenreModel.getFilmGenreByFilmId(Number(id));
+                res.status(200).json({ message: 'Succes', data: film, genre: filmGenre });
+            }
         } catch (error) {
             console.error('Error getting film:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -106,8 +111,6 @@ class FilmController {
             const updatedFilmHeader = this.checkAndUpdateField(film_header, filmData.film_header) ?? "";
             const updatedDateRelease = (this.checkAndUpdateField(date_release, filmData.date_release));
             const updatedDuration = this.checkAndUpdateField(duration, filmData.duration);
-
-            
             
             const updated: Film = {
                 film_id: Number(id),
@@ -121,7 +124,10 @@ class FilmController {
                 id_user: id_user
             }
 
-
+            if (genres && genres.length > 0){
+                await this.filmGenreModel.deleteFilmGenre(Number(id));
+                await this.filmGenreModel.addFilmGenre(Number(id), genres);     
+            }
 
             this.filmModel.updateFilm(updated);
             res.status(200).json({ message: "Film updated successfully"});
@@ -155,16 +161,21 @@ class FilmController {
 
     async deleteFilm(req: Request, res: Response) {
         try {
-            const { film_id, id } = req.params;
-            const checkUser = await this.filmModel.getFilmByFilmId(Number(id));
+            const { id } = req.params;
+            // const checkUser = await this.filmModel.getFilmByFilmId(Number(id));
 
-            if (!checkUser) {
-                return res.status(404).json({ message: 'Double check the user id and film id' });
+            // if (!checkUser) {
+            //     return res.status(404).json({ message: 'Double check the user id and film id' });
+            // }
+            const checkFilm = await this.filmModel.getFilmByFilmId(Number(id));
+            if(!checkFilm){
+                res.status(404).json({message: "Film Not Found"});
+            } else {
+                this.filmGenreModel.deleteFilmGenre(Number(id));
+                this.filmModel.deleteFilm(Number(id));
+                res.status(200).json({ message: 'Film deleted successfully' });
             }
 
-            this.filmGenreModel.deleteFilmGenre(Number(id));
-            this.filmModel.deleteFilm(Number(id));
-            res.status(200).json({ message: 'Film deleted successfully' });
         } catch (error) {
             console.error('Error getting film:', error);
             res.status(500).json({ error: 'Internal server error' });

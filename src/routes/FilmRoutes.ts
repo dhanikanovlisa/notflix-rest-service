@@ -21,7 +21,7 @@ filmRouter.post('/create/:id', wrapWithErrorHandling(async (req, res) => {
     await filmController.createFilm(req, res);
 }));
 
-filmRouter.delete('/delete/:film_id/user/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.delete('/delete/:id', wrapWithErrorHandling(async (req, res) => {
     await filmController.deleteFilm(req, res);
 }));
 
