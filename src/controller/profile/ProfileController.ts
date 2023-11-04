@@ -32,33 +32,37 @@ class ProfileController {
 
     async updateProfile(req: Request, res: Response) {
         try {
-            // const { id } = req.params;
-            // const { username, last_name, first_name, password, email, phone_number, photo_profile } = req.body;
+            const { id } = req.params;
+            const { username, last_name, first_name, email, phone_number, photo_profile } = req.body;
+
+            
+            const user = await this.userModel.getUserById(Number(id));
+            
+            if (!user){
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            const updateUsername = this.checkAndUpdateField(username, user.username) ?? "";
+            const updateLastName = this.checkAndUpdateField(last_name, user.last_name ?? "") ?? "";
+            const updateFirstName = this.checkAndUpdateField(first_name, user.first_name ?? "") ?? "";
+            const updateEmail = this.checkAndUpdateField(email, user.email) ?? "";
+            const updatePhoneNumber = this.checkAndUpdateField(phone_number, user.phone_number ?? "") ?? "";
+            const updatePhotoProfile = this.checkAndUpdateField(photo_profile, user.photo_profile ?? "") ?? "";
 
 
-            // const userData: User = {
-            //     id_user: Number(id),
-            //     username,
-            //     last_name,
-            //     first_name,
-            //     password,
-            //     email,
-            //     phone_number,
-            //     photo_profile,
-            // };
-
-            // if (username) userData.username = username;
-            // if (last_name) userData.last_name = last_name;
-            // if (first_name) userData.first_name = first_name;
-            // if (password) userData.password = password;
-            // if (email) userData.email = email;
-            // if (phone_number) userData.phone_number = phone_number;
-            // if (photo_profile) userData.photo_profile = photo_profile;
-
-            // const updateProfile = await this.userModel.updateProfile(userData);
+            const userData: User = {
+                id_user: Number(id),
+                username: updateUsername,
+                last_name: updateLastName,
+                first_name: updateFirstName,
+                email: updateEmail,
+                phone_number: updatePhoneNumber,
+                photo_profile: updatePhotoProfile,
+            };
 
 
-            // res.status(200).json({ message: 'Profile updated', data: updateProfile });
+            this.userModel.updateProfile(userData);
+            res.status(200).json({ message: 'Profile updated' });
 
 
         } catch (error) {
@@ -67,6 +71,19 @@ class ProfileController {
         }
     }
 
+    checkAndUpdateField(newData: string  | undefined, existingData: string) {
+        if (newData === undefined || newData === null || newData === "") {
+            return existingData;
+        } else {
+            if (typeof newData === "string") {
+                if (newData !== existingData) {
+                    return newData;
+                } else {
+                    return existingData;
+                }
+            }
+        }
+    }    
 
 }
 

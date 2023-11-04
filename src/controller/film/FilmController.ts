@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import UserModel from '../../models/UserModel';
 import FilmModel from '../../models/FilmModel';
 import FilmGenreModel from '../../models/FilmGenreModel';
+import { Film } from '../../interface';
 
 class FilmController {
 
@@ -41,8 +42,8 @@ class FilmController {
 
     async getFilmByFilmId(req: Request, res: Response) {
         try {
-            const { id, film_id } = req.params;
-            const film = await this.filmModel.getFilmByFilmId(Number(film_id), Number(id))
+            const { id } = req.params;
+            const film = await this.filmModel.getFilmByFilmId(Number(id))
             res.status(200).json({ message: 'Succes', data: film });
         } catch (error) {
             console.error('Error getting film:', error);
@@ -83,40 +84,79 @@ class FilmController {
     }
 
     async updateFilm(req: Request, res: Response) {
-        // try {
-        //     const { id } = req.params;
-        //     const { title, description, film_path, film_poster, film_header, date_release, duration, user_id, genres } = req.body;
+        try {
+            const { id } = req.params;
+            const { title, description, film_path, film_poster, film_header, date_release, duration, id_user, genres } = req.body;
 
-        //     const user = await this.userModel.getUserById(Number(user_id));
-        //     if (!user) {
-        //         return res.status(404).json({ error: "Make sure this user has this film" });
-        //     }
+            const user = await this.userModel.getUserById(Number(id_user));
+            if (!user) {
+                return res.status(404).json({ error: "Make sure this user has this film" });
+            }
 
-        //     const filmData: Film = {};
+            const filmData = await this.filmModel.getFilmByFilmId(Number(id));
 
-        //     if (title) filmData.title = title;
-        //     if (description) filmData.description = description;
-        //     if (film_path) filmData.film_path = film_path;
-        //     if (film_poster) filmData.film_poster = film_poster;
-        //     if (film_header) filmData.film_header = film_header;
-        //     if (date_release) filmData.date_release = date_release;
-        //     if (duration) filmData.duration = duration;
-        //     if (user?.id_user) filmData.id_user = user.id_user;
-        //     filmData.film_id = Number(id);
+            if (!filmData) {
+                return res.status(404).json({ error: "Film not found" });
+            }
+            
+            const updatedTitle = this.checkAndUpdateField(title, filmData.title) ?? "";
+            const updatedDescription = this.checkAndUpdateField(description, filmData.description) ?? "";
+            const updatedFilmPath = this.checkAndUpdateField(film_path, filmData.film_path) ?? "";
+            const updatedFilmPoster = this.checkAndUpdateField(film_poster, filmData.film_poster) ?? "";
+            const updatedFilmHeader = this.checkAndUpdateField(film_header, filmData.film_header) ?? "";
+            const updatedDateRelease = (this.checkAndUpdateField(date_release, filmData.date_release));
+            const updatedDuration = this.checkAndUpdateField(duration, filmData.duration);
 
-        //     const updatedFilm = this.filmModel.updateFilm(filmData);
-        //     res.status(200).json({ message: "Film updated successfully", film });
-        // } catch (error) {
-        //     console.error('Error getting film:', error);
-        //     res.status(500).json({ error: 'Internal server error' });
-        // }
+            
+            
+            const updated: Film = {
+                film_id: Number(id),
+                title: updatedTitle?.toString(),
+                description: updatedDescription?.toString(),
+                film_path: updatedFilmPath?.toString(),
+                film_poster: updatedFilmPoster?.toString(),
+                film_header: updatedFilmHeader?.toString(),
+                date_release: updatedDateRelease as Date,
+                duration: Number(updatedDuration),
+                id_user: id_user
+            }
+
+
+
+            this.filmModel.updateFilm(updated);
+            res.status(200).json({ message: "Film updated successfully"});
+        } catch (error) {
+            console.error('Error getting film:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
 
     }
 
+    checkAndUpdateField(newData: string | number | Date | undefined, existingData: string | number | Date){
+        if (newData === undefined || newData === null || newData === "") {
+            return existingData;
+        } else {
+            if (typeof newData === "string" || typeof newData === "number") {
+                if (newData !== existingData) {
+                    return newData;
+                } else {
+                    return existingData;
+                }
+            } else if (newData instanceof Date) {
+                if (newData.getDate() !== (existingData as Date).getDate()) {
+                    return newData;
+                } else {
+                    return existingData;
+                }
+            }
+        }
+    }
+    
+
     async deleteFilm(req: Request, res: Response) {
         try {
-            const { film_id,id } = req.params;
-            const checkUser = await this.filmModel.getFilmByFilmId(Number(film_id), Number(id));
+            const { film_id, id } = req.params;
+            const checkUser = await this.filmModel.getFilmByFilmId(Number(id));
 
             if (!checkUser) {
                 return res.status(404).json({ message: 'Double check the user id and film id' });

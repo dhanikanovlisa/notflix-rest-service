@@ -16,11 +16,10 @@ class FilmModel{
     }
 
     /**Return Film by Film Id and User Id */
-    async getFilmByFilmId(film_id: number, id_user: number) {
+    async getFilmByFilmId(film_id: number) {
         return prisma.film.findUnique({
             where: {
                 film_id: film_id,
-                id_user: id_user,
             },
         });
     }

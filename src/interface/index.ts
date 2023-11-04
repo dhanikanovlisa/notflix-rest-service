@@ -1,25 +1,25 @@
 export interface User {
     id_user?: number;
-    username: string;
-    last_name: string;
-    first_name: string;
-    password: string;
-    email: string;
-    phone_number: string;
-    photo_profile?: string;
+    username: string ;
+    last_name: string ;
+    first_name: string ;
+    password?: string ;
+    email: string ;
+    phone_number: string ;
+    photo_profile?: string ;
     is_admin?: boolean;
 }
 
 export interface Film {
     film_id?: number;
-    title: string;
-    description: string;
-    film_path: string;
-    film_poster: string;
-    film_header: string;
-    date_release: Date;
-    duration: number;
-    id_user: number;
+    title: string ;
+    description: string ;
+    film_path: string ;
+    film_poster: string ;
+    film_header: string ;
+    date_release: Date ;
+    duration: number ;
+    id_user: number ;
 }
 
 export interface FilmGenre {
