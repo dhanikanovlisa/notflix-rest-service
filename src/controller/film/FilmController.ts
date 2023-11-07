@@ -117,7 +117,7 @@ class FilmController {
     async updateFilm(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const { title, description, film_path, film_poster, film_header, date_release, duration, id_user, genres } = req.body;
+            const { title, description, film_path, film_poster, film_header, film_path_size, film_poster_size, film_header_size, date_release, duration, id_user, genres } = req.body;
 
             const user = await this.userModel.getUserById(Number(id_user));
             if (!user) {
@@ -128,6 +128,10 @@ class FilmController {
 
             if (!filmData) {
                 return res.status(404).json({ error: "Film not found" });
+            }
+
+            if(film_path_size > 800000 || film_poster_size > 800000 || film_header_size > 9000000) {
+                return res.status(400).json({ error: "File size too large" });
             }
 
             const updatedTitle = this.checkAndUpdateField(title, filmData.title) ?? "";

@@ -33,7 +33,7 @@ class ProfileController {
     async updateProfile(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const { username, last_name, first_name, email, phone_number, photo_profile } = req.body;
+            const { username, last_name, first_name, email, phone_number, profileName, profileSize } = req.body;
 
             
             const user = await this.userModel.getUserById(Number(id));
@@ -42,12 +42,16 @@ class ProfileController {
                 return res.status(404).json({ error: 'User not found' });
             }
 
+            if(profileSize > 80000){
+                return res.status(400).json({ error: 'Image size too large' });
+            }
+
             const updateUsername = this.checkAndUpdateField(username, user.username) ?? "";
             const updateLastName = this.checkAndUpdateField(last_name, user.last_name ?? "") ?? "";
             const updateFirstName = this.checkAndUpdateField(first_name, user.first_name ?? "") ?? "";
             const updateEmail = this.checkAndUpdateField(email, user.email) ?? "";
             const updatePhoneNumber = this.checkAndUpdateField(phone_number, user.phone_number ?? "") ?? "";
-            const updatePhotoProfile = this.checkAndUpdateField(photo_profile, user.photo_profile ?? "") ?? "";
+            const updatePhotoProfile = this.checkAndUpdateField(profileName, user.photo_profile ?? "") ?? "";
 
 
             const userData: User = {
