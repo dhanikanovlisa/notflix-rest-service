@@ -1,9 +1,8 @@
 import express from 'express';
 import wrapWithErrorHandling from "../utils/wrapErrorHandling";
-import SoapController from '../controller/SOAP/SOAPController';
+import SoapController from '../controller/SOAP/BaseSoapController';
 
 const soapRouter = express.Router();
-const soapController = new SoapController();
 
 
 
