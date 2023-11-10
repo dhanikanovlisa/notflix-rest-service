@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { User } from '../../interface';
 import UserModel from '../../models/UserModel';
+import jwt from 'jsonwebtoken';
+import generateSecret from '../../utils/jwtConfig';
 
 class AuthController{
     private userModel: UserModel;
@@ -16,7 +18,18 @@ class AuthController{
             if(user == null){
                 res.status(200).json({ code: 0, message: 'Username or password is incorrect' });
             } else {
-                res.status(200).json({ code: 1, message: 'Login success' });
+                const accessToken = jwt.sign(
+                    {id_user: user.id_user, is_admin: user.is_admin}, 
+                    generateSecret(), 
+                    {expiresIn: '1h'}
+                )
+                
+                res.status(200).json({ 
+                    code: 1,
+                    message: 'Login success',
+                    token: accessToken,
+                    is_admin: user.is_admin
+                });
             }
     
         } catch (error){
