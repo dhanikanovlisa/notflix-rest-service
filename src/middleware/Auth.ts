@@ -6,7 +6,6 @@ import generateSecret from "../utils/jwtConfig";
 const auth = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.header('Authorization')?.replace('Bearer ', '');
-      console.log(token);
    
       if (!token) {
         throw new Error();
@@ -16,7 +15,6 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
       next();
 
     } catch (err) {
-      console.log(err);
       res.status(401).send('Please authenticate');
     }
 };
