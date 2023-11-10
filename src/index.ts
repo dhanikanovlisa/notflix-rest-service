@@ -13,14 +13,14 @@ app.use(cors())
 
 //Listen to port
 app.listen(port, () => {
-  console.log(`Server is askhjdhaskdjhs running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
   console.log(`Database url ${process.env.DATABASE_URL}`)
 });
 
 
 //Routes
 app.get('/', (_, res) => {
-  res.send('Welcome To Notflix hi Rest Service');
+  res.send('Welcome To Notflix ijlkt Service');
 });
 
 /**Films */
@@ -31,3 +31,5 @@ app.use('/genres', genreRouter);
 app.use('/profile', profileRouter);
 /**Auth */
 app.use('/auth', authRouter);
+/**Check */
+app.use('/check', authRouter);
