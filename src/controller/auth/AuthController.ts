@@ -19,7 +19,7 @@ class AuthController{
                 res.status(200).json({ code: 0, message: 'Username or password is incorrect' });
             } else {
                 const accessToken = jwt.sign(
-                    {id_user: user.id_user, is_admin: user.is_admin}, 
+                    {username: user.username, is_admin: user.is_admin}, 
                     generateSecret(), 
                     {expiresIn: '1h'}
                 )
@@ -88,6 +88,32 @@ class AuthController{
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    async checkCurrentUser(req: Request, res: Response){
+        try {
+            const token = req.header('Authorization')?.replace('Bearer ', '');
+            if (!token) {
+                throw new Error();
+            }
+
+            const payload = jwt.verify(token, generateSecret());
+            if (typeof payload === 'string') { 
+                throw new Error();
+            }
+
+            const user = await this.userModel.checkUsername(payload.username);
+
+            if(user !== null){
+                res.status(200).json({ isAuth: true, user: user });
+            } else {
+                res.status(200).json({ isAuth: false });
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ isAuth: false});
         }
     }
 }

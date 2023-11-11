@@ -49,6 +49,15 @@ class UserModel{
         return prisma.user.findFirst({
             where: {
                 username: username
+            },
+            select: {
+                username: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+                phone_number: true,
+                photo_profile: true,
+                is_admin: true
             }
         })
     }
