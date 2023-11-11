@@ -112,7 +112,6 @@ class AuthController{
             }
             
         } catch (error) {
-            console.error('Error:', error);
             res.status(500).json({ isAuth: false});
         }
     }
