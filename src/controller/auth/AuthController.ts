@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { User } from '../../interface';
 import UserModel from '../../models/UserModel';
+import jwt from 'jsonwebtoken';
+import generateSecret from '../../utils/jwtConfig';
 
 class AuthController{
     private userModel: UserModel;
@@ -16,7 +18,18 @@ class AuthController{
             if(user == null){
                 res.status(200).json({ code: 0, message: 'Username or password is incorrect' });
             } else {
-                res.status(200).json({ code: 1, message: 'Login success' });
+                const accessToken = jwt.sign(
+                    {username: user.username, is_admin: user.is_admin}, 
+                    generateSecret(), 
+                    {expiresIn: '1h'}
+                )
+                
+                res.status(200).json({ 
+                    code: 1,
+                    message: 'Login success',
+                    token: accessToken,
+                    is_admin: user.is_admin
+                });
             }
     
         } catch (error){
@@ -75,6 +88,31 @@ class AuthController{
         } catch (error) {
             console.error('Error:', error);
             res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    async checkCurrentUser(req: Request, res: Response){
+        try {
+            const token = req.header('Authorization')?.replace('Bearer ', '');
+            if (!token) {
+                throw new Error();
+            }
+
+            const payload = jwt.verify(token, generateSecret());
+            if (typeof payload === 'string') { 
+                throw new Error();
+            }
+
+            const user = await this.userModel.checkUsername(payload.username);
+
+            if(user !== null){
+                res.status(200).json({ isAuth: true, user: user });
+            } else {
+                res.status(200).json({ isAuth: false });
+            }
+            
+        } catch (error) {
+            res.status(500).json({ isAuth: false});
         }
     }
 }

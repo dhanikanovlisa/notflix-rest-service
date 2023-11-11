@@ -1,8 +1,8 @@
 import express from 'express';
 import { FilmController } from "../controller/film/FilmController";
 import wrapWithErrorHandling from "../utils/wrapErrorHandling";
+import auth from '../middleware/Auth';
 import SubmissionFilmController from '../controller/SOAP/SubmissionFilmController';
-
 const filmRouter = express.Router();
 const filmController = new FilmController();
 const submissionFilmController = new SubmissionFilmController();
@@ -27,7 +27,7 @@ filmRouter.delete('/delete/:id', wrapWithErrorHandling(async (req, res) => {
     await filmController.deleteFilm(req, res);
 }));
 
-filmRouter.put('/edit/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.put('/edit/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.updateFilm(req, res);
 }));
 
