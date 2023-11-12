@@ -16,7 +16,7 @@ class AuthController{
             const {username, password} = req.body;
             const user = await this.userModel.login(username, password)
             if(user == null){
-                res.status(200).json({ code: 0, message: 'Username or password is incorrect' });
+                res.status(400).json({ message: 'Username or password is incorrect' });
             } else {
                 const accessToken = jwt.sign(
                     {username: user.username, is_admin: user.is_admin}, 
@@ -25,7 +25,6 @@ class AuthController{
                 )
                 
                 res.status(200).json({ 
-                    code: 1,
                     message: 'Login success',
                     token: accessToken,
                     is_admin: user.is_admin,
@@ -50,7 +49,8 @@ class AuthController{
                 password,
                 first_name,
                 last_name,
-                is_admin: false
+                is_admin: false,
+                photo_profile: 'profile-placeholder.png'
             });
             res.status(201).json({ message: 'User created', data:user});
     
@@ -109,7 +109,7 @@ class AuthController{
             if(user !== null){
                 res.status(200).json({ isAuth: true, user: user });
             } else {
-                res.status(200).json({ isAuth: false });
+                res.status(400).json({ isAuth: false });
             }
             
         } catch (error) {
