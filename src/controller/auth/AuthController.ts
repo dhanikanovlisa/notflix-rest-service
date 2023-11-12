@@ -28,7 +28,8 @@ class AuthController{
                     code: 1,
                     message: 'Login success',
                     token: accessToken,
-                    is_admin: user.is_admin
+                    is_admin: user.is_admin,
+                    id: user.id_user
                 });
             }
     

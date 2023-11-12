@@ -1,3 +1,4 @@
+'use strict'
 import express from 'express';
 import filmRouter from './routes/FilmRoutes';
 import profileRouter from './routes/ProfileRoute';
@@ -16,7 +17,6 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
   console.log(`Database url ${process.env.DATABASE_URL}`)
 });
-
 
 //Routes
 app.get('/', (_, res) => {

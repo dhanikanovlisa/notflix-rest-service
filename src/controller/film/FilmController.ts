@@ -66,22 +66,6 @@ class FilmController {
         }
     }
 
-    async tes(req: Request, res: Response) {
-        try {
-            const { id } = req.params;
-            const film = await this.filmModel.getFilmByFilmId(Number(id))
-            if (!film) {
-                res.status(404).json({ message: "Film Not Found" });
-            }
-            const filmGenre = await this.filmGenreModel.getFilmGenreByFilmId(Number(id));
-
-            res.status(200).json({ message: 'Success', data: film, genre: filmGenre });
-        } catch (error) {
-            console.error('Error getting film:', error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    }
-
     async createFilm(req: Request, res: Response) {
         try {
             const { id } = req.params;
