@@ -4,7 +4,7 @@ class BaseSoapController {
         return {
             headers: {
                 'Content-Type': 'text/xml',
-                'API-Key': '7e588ca133d33870bf37813863686615',
+                'API-Key':`${process.env.SOAP_API_KEY}`,
             },
         };
     }
@@ -51,6 +51,30 @@ class BaseSoapController {
             });
         });
     }
+
+    async getResponse(result: any, method: string){
+        if(method == ""){
+            const responseBody = result['S:Envelope']['S:Body'];
+            return responseBody;
+        } else {
+            const responseBody = result['S:Envelope']['S:Body'][0][`ns2:${method}Response`][0];
+            return responseBody;
+        }
+    }
+
+    async formatToJSON(result:any){
+        const responseBody:any = [];
+        result.forEach((res:any) => {
+            const resObject:any = {};
+            Object.keys(res).forEach((key) => {
+                resObject[key] = res[key][0];
+            });
+            responseBody.push(resObject);
+        });
+        return responseBody;
+    }
+
+
 
 }
 

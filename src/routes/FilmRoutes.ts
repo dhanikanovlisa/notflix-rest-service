@@ -37,6 +37,18 @@ filmRouter.get('/requestFilm/:id', wrapWithErrorHandling(async (req, res) => {
     await submissionFilmController.getAllRequestFilmById(req, res);
 }));
 
+filmRouter.get('/requestFilm/detail/:id', wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.getRequestByRequestFilmId(req, res);
+}));
+
+filmRouter.post('/createFilmRequest', wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.createRequestFilm(req, res);
+}));
+
+filmRouter.delete('/requestFilm/delete/:id', wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.deleteRequestFilm(req, res);
+}));
+
 
 
 

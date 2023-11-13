@@ -114,7 +114,7 @@ class FilmController {
                 return res.status(404).json({ error: "Film not found" });
             }
 
-            if(film_path_size > 800000 || film_poster_size > 800000 || film_header_size > 9000000) {
+            if(film_path_size > 9 * 1024 * 1024 || film_poster_size > 800 * 1024 || film_header_size > 800 * 1024) {
                 return res.status(400).json({ error: "File size too large" });
             }
 
