@@ -25,11 +25,11 @@ filmRouter.post('/create/:id', wrapWithErrorHandling(async (req, res) => {
     await filmController.createFilm(req, res);
 }));
 
-filmRouter.delete('/delete/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.delete('/film/delete/:id', wrapWithErrorHandling(async (req, res) => {
     await filmController.deleteFilm(req, res);
 }));
 
-filmRouter.put('/edit/:id', auth, wrapWithErrorHandling(async (req, res) => {
+filmRouter.put('/film/edit/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.updateFilm(req, res);
 }));
 
@@ -43,6 +43,10 @@ filmRouter.get('/requestFilm/detail/:id', wrapWithErrorHandling(async (req, res)
 
 filmRouter.post('/createFilmRequest', wrapWithErrorHandling(async (req, res) => {
     await submissionFilmController.createRequestFilm(req, res);
+}));
+
+filmRouter.put('/requestFilm/edit/:id', wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.updateRequestFilm(req, res); 
 }));
 
 filmRouter.delete('/requestFilm/delete/:id', wrapWithErrorHandling(async (req, res) => {

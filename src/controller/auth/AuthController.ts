@@ -20,8 +20,7 @@ class AuthController{
             } else {
                 const accessToken = jwt.sign(
                     {username: user.username, is_admin: user.is_admin}, 
-                    generateSecret(), 
-                    {expiresIn: '1h'}
+                    generateSecret()
                 )
                 
                 res.status(200).json({ 
