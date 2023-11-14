@@ -26,7 +26,8 @@ class AuthController{
                 res.status(200).json({ 
                     message: 'Login success',
                     token: accessToken,
-                    data: user,
+                    is_admin: user.is_admin,
+                    id: user.id_user
                 });
             }
     
