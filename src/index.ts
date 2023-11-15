@@ -5,6 +5,7 @@ import profileRouter from './routes/ProfileRoute';
 import authRouter from './routes/AuthRoutes';
 import genreRouter from './routes/GenreRoutes';
 import subscriptionsRouter from './routes/SubscriptionsRoutes';
+import checkRouter from './routes/CheckRoutes';
 
 var cors = require('cors');
 const app = express();
@@ -21,7 +22,7 @@ app.listen(port, () => {
 
 //Routes
 app.get('/', (_, res) => {
-  res.send('Welcome To Notflix ijlkt Service');
+  res.send('Welcome To Notflix qwer Service');
 });
 
 /**Films */
@@ -35,4 +36,4 @@ app.use('/subscriptions', subscriptionsRouter);
 /**Auth */
 app.use('/auth', authRouter);
 /**Check */
-app.use('/check', authRouter);
+app.use('/check', checkRouter);

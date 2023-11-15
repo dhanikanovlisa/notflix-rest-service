@@ -69,6 +69,17 @@ class UserModel{
             }
         })
     }
+
+    async getAdminEmail(){
+        return prisma.user.findMany({
+            where: {
+                is_admin: true
+            },
+            select: {
+                email: true
+            }
+        })
+    }
 }
 
 export default UserModel;
