@@ -14,16 +14,4 @@ authRouter.post('/register', wrapWithErrorHandling(async (req, res) => {
     await authController.register(req, res);
 }));
 
-authRouter.get('/username/:username', wrapWithErrorHandling(async (req, res) => {
-    await authController.checkUsername(req, res);
-}));
-
-authRouter.get('/email/:email', wrapWithErrorHandling(async (req, res) => {
-    await authController.checkEmail(req, res);
-}));
-
-authRouter.get('/current-user',  wrapWithErrorHandling(async (req, res) => {
-    await authController.checkCurrentUser(req, res);
-}));
-
 export default authRouter;
