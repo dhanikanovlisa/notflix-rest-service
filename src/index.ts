@@ -5,6 +5,7 @@ import profileRouter from './routes/ProfileRoute';
 import authRouter from './routes/AuthRoutes';
 import genreRouter from './routes/GenreRoutes';
 import subscriptionsRouter from './routes/SubscriptionsRoutes';
+import checkRouter from './routes/CheckRoutes';
 
 var cors = require('cors');
 const app = express();
