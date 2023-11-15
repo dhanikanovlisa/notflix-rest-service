@@ -8,13 +8,11 @@ class SubscriptionController extends BaseSoapController {
     public async getAllSubscription(req: Request, res: Response){
         await this.errorHandlingWrapper(async () => {
             const {responseStatus, message, data} = await this.dispatchSoapRequest(
-                'getAllSubscriptions', 
+                'getAllSubscription', 
                 this.serviceUrl
             );
             
-            if(responseStatus === 200){
-                res.status(200).json({message: message, data: data});
-            }
+            res.status(responseStatus).json({message: message, data: data});
         }, req, res);
     }
 
@@ -28,9 +26,7 @@ class SubscriptionController extends BaseSoapController {
                 {status: status.toUpperCase()}
             )
     
-            if(responseStatus === 200){
-                res.status(200).json({message: message, data: data});
-            }
+            res.status(responseStatus).json({message: message, data: data});
         }, req, res);
     }
 
