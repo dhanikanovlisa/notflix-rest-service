@@ -4,6 +4,9 @@ import filmRouter from './routes/FilmRoutes';
 import profileRouter from './routes/ProfileRoute';
 import authRouter from './routes/AuthRoutes';
 import genreRouter from './routes/GenreRoutes';
+import checkRouter from './routes/CheckRoutes';
+import prisma from "../src/prisma/Prisma";
+// import seed from '../prisma/seed';
 
 var cors = require('cors');
 const app = express();
@@ -20,7 +23,7 @@ app.listen(port, () => {
 
 //Routes
 app.get('/', (_, res) => {
-  res.send('Welcome To Notflix ijlkt Service');
+  res.send('Welcome To Notflix qwer Service');
 });
 
 /**Films */
@@ -32,4 +35,4 @@ app.use('/profile', profileRouter);
 /**Auth */
 app.use('/auth', authRouter);
 /**Check */
-app.use('/check', authRouter);
+app.use('/check', checkRouter);
