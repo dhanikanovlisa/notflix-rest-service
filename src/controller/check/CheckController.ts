@@ -14,7 +14,6 @@ class CheckController{
     async getAdminEmail(req: Request, res: Response){
         try {
             const user = await this.userModel.getAdminEmail();
-            console.log(user);
             res.status(200).json({ admin: user});
         } catch (error) {
             console.error('Error:', error);

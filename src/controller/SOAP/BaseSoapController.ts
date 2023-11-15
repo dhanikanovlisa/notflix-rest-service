@@ -6,7 +6,7 @@ class BaseSoapController {
         return {
             headers: {
                 'Content-Type': 'text/xml',
-                'Api-key':`${process.env.SOAP_API_KEY}`,
+                'Api-key': `${process.env.SOAP_API_KEY}`,
             },
         };
     }
@@ -32,9 +32,9 @@ class BaseSoapController {
         return `<${param} xmlns="">${value}</${param}>`;
     }
 
-    async createManyParams(params: Record<string, object>){
+    async createManyParams(params: Record<string, object>) {
         let xmlString = '';
-        for (const [param, value] of Object.entries(params)){
+        for (const [param, value] of Object.entries(params)) {
             xmlString += `<${param} xmlns="">${value}</${param}>`
         }
         return xmlString;
@@ -54,28 +54,30 @@ class BaseSoapController {
         });
     }
 
-    parseXmlObject (xmlResponse: any): object {
+    parseXmlObject(xmlResponse: any): object {
         const soapBody = xmlResponse['S:Envelope']['S:Body'];
         const methodNamespace = Object.keys(soapBody[0])[0];
-        
-        const responseBody = soapBody[0][methodNamespace][0]['return'];
-        const parsedResponse:object[] = [];
-        responseBody.forEach((el:any) => {
-            const obj:any = {};
-            Object.keys(el).forEach((key) => {
-                obj[key] = el[key][0];
-            });
-            parsedResponse.push(obj);
-        });
 
-        if(parsedResponse.length===1){
-            return parsedResponse[0];
+        const responseBody = soapBody[0][methodNamespace][0]['return'];
+        const parsedResponse: object[] = [];
+        if (responseBody) {
+            responseBody.forEach((el: any) => {
+                const obj: any = {};
+                Object.keys(el).forEach((key) => {
+                    obj[key] = el[key][0];
+                });
+                parsedResponse.push(obj);
+            });
+            if (parsedResponse.length === 1) {
+                return parsedResponse[0];
+            }
         }
+
 
         return parsedResponse;
     }
 
-    protected async dispatchSoapRequest(method: string, serviceUrl: string, parameters?: Record<string, any>){
+    protected async dispatchSoapRequest(method: string, serviceUrl: string, parameters?: Record<string, any>) {
         const header = await this.createHeader();
         const params = parameters === undefined ? '' : await this.createManyParams(parameters);
         const body = await this.createBody(method, params);
@@ -84,16 +86,16 @@ class BaseSoapController {
             headers: header.headers
         });
 
-        if (response.status === 200){
-            const parsedXmlResponse:any = await this.parseXmlResponse(response.data);
-            const parsedXmlObject:object = this.parseXmlObject(parsedXmlResponse);
+        if (response.status === 200) {
+            const parsedXmlResponse: any = await this.parseXmlResponse(response.data);
+            const parsedXmlObject: object = this.parseXmlObject(parsedXmlResponse);
 
             return {
                 responseStatus: 200,
                 message: "Success",
                 data: parsedXmlObject
             };
-        }else{
+        } else {
             return {
                 responseStatus: response.status,
                 message: response.statusText,
@@ -102,20 +104,20 @@ class BaseSoapController {
         }
     }
 
-    protected async errorHandlingWrapper(fun: () => Promise<any>, req: Request, res: Response){
-        try{
+    protected async errorHandlingWrapper(fun: () => Promise<any>, req: Request, res: Response) {
+        try {
             await fun();
         }
-        catch(error){
-            if(axios.isAxiosError(error)){
-                const axiosError:AxiosError = error;
+        catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError: AxiosError = error;
                 console.error('Error calling SOAP service:', axiosError);
-                if(axiosError.response){
+                if (axiosError.response) {
                     res.status(axiosError.response.status).send(axiosError.response.statusText);
-                }else{
+                } else {
                     res.status(500).send('Internal Server Error');
                 }
-            }else{
+            } else {
                 console.error('Unknown error', error);
                 res.status(500).send('Internal Server Error');
             }

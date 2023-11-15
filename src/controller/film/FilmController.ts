@@ -1,11 +1,11 @@
 
 import { Request, Response } from 'express';
+import { Film } from '../../interface';
 import UserModel from '../../models/UserModel';
 import FilmModel from '../../models/FilmModel';
 import FilmGenreModel from '../../models/FilmGenreModel';
 import GenreModel from '../../models/GenreModel';
-import { Film } from '../../interface';
-
+import checkAndUpdateField from '../../utils/checkandUpdateField';
 class FilmController {
 
     private filmModel: FilmModel;
@@ -105,14 +105,12 @@ class FilmController {
 
             const user = await this.userModel.getUserById(Number(id_user));
             if (!user) {
-                console.log("gapunay film");
                 return res.status(404).json({ error: "Make sure this user has this film" });
             }
 
             const filmData = await this.filmModel.getFilmByFilmId(Number(id));
 
             if (!filmData) {
-                console.log("gaketemu filmny");
                 return res.status(404).json({ error: "Film not found" });
             }
 
@@ -120,13 +118,13 @@ class FilmController {
                 return res.status(400).json({ error: "File size too large" });
             }
 
-            const updatedTitle = this.checkAndUpdateField(title, filmData.title) ?? "";
-            const updatedDescription = this.checkAndUpdateField(description, filmData.description) ?? "";
-            const updatedFilmPath = this.checkAndUpdateField(film_path, filmData.film_path) ?? "";
-            const updatedFilmPoster = this.checkAndUpdateField(film_poster, filmData.film_poster) ?? "";
-            const updatedFilmHeader = this.checkAndUpdateField(film_header, filmData.film_header) ?? "";
-            const updatedDateRelease = (this.checkAndUpdateField(date_release, filmData.date_release));
-            const updatedDuration = this.checkAndUpdateField(Number(duration), Number(filmData.duration));
+            const updatedTitle = checkAndUpdateField(title, filmData.title) ?? "";
+            const updatedDescription = checkAndUpdateField(description, filmData.description) ?? "";
+            const updatedFilmPath =checkAndUpdateField(film_path, filmData.film_path) ?? "";
+            const updatedFilmPoster = checkAndUpdateField(film_poster, filmData.film_poster) ?? "";
+            const updatedFilmHeader = checkAndUpdateField(film_header, filmData.film_header) ?? "";
+            const updatedDateRelease = checkAndUpdateField(date_release, filmData.date_release);
+            const updatedDuration = checkAndUpdateField(Number(duration), Number(filmData.duration));
 
             const updated: Film = {
                 film_id: Number(id),
@@ -154,44 +152,9 @@ class FilmController {
 
     }
 
-    checkAndUpdateField(newData: string | number | Date | undefined, existingData: string | number | Date) {
-        if (newData === undefined || newData === null || newData === "") {
-            return existingData;
-        } else {
-            if (typeof newData === "string") {
-                if(newData === ""){
-                    return existingData;
-                }
-                if (newData !== existingData) {
-                    return newData;
-                } else if(newData === existingData) {
-                    return existingData;
-                }
-            } else if (newData instanceof Date) {
-                if (newData.getDate() !== (existingData as Date).getDate()) {
-                    return newData;
-                } else {
-                    return existingData;
-                }
-            } else if (typeof newData === "number"){
-                if(newData === 0){
-                    return existingData;
-                } else if(newData !== existingData){
-                    return newData;
-                }
-            }
-        }
-    }
-
-
     async deleteFilm(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            // const checkUser = await this.filmModel.getFilmByFilmId(Number(id));
-
-            // if (!checkUser) {
-            //     return res.status(404).json({ message: 'Double check the user id and film id' });
-            // }
             const checkFilm = await this.filmModel.getFilmByFilmId(Number(id));
             if (!checkFilm) {
                 res.status(404).json({ message: "Film Not Found" });

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { User } from '../../interface';
 import UserModel from '../../models/UserModel';
-import prisma from '../../prisma/Prisma';
+import checkAndUpdateField from '../../utils/checkandUpdateField';
 
 class ProfileController {
 
@@ -46,22 +46,22 @@ class ProfileController {
                 return res.status(400).json({ error: 'Image size too large' });
             }
 
-            const updateUsername = this.checkAndUpdateField(username, user.username) ?? "";
-            const updateLastName = this.checkAndUpdateField(last_name, user.last_name ?? "") ?? "";
-            const updateFirstName = this.checkAndUpdateField(first_name, user.first_name ?? "") ?? "";
-            const updateEmail = this.checkAndUpdateField(email, user.email) ?? "";
-            const updatePhoneNumber = this.checkAndUpdateField(phone_number, user.phone_number ?? "") ?? "";
-            const updatePhotoProfile = this.checkAndUpdateField(profileName, user.photo_profile ?? "") ?? "";
+            const updateUsername = checkAndUpdateField(username, user.username) ?? "";
+            const updateLastName = checkAndUpdateField(last_name, user.last_name ?? "") ?? "";
+            const updateFirstName = checkAndUpdateField(first_name, user.first_name ?? "") ?? "";
+            const updateEmail =checkAndUpdateField(email, user.email) ?? "";
+            const updatePhoneNumber = checkAndUpdateField(phone_number, user.phone_number ?? "") ?? "";
+            const updatePhotoProfile = checkAndUpdateField(profileName, user.photo_profile ?? "") ?? "";
 
 
             const userData: User = {
                 id_user: Number(id),
-                username: updateUsername,
-                last_name: updateLastName,
-                first_name: updateFirstName,
-                email: updateEmail,
-                phone_number: updatePhoneNumber,
-                photo_profile: updatePhotoProfile,
+                username: updateUsername.toString(),
+                last_name: updateLastName.toString(),
+                first_name: updateFirstName.toString(),
+                email: updateEmail.toString(),
+                phone_number: updatePhoneNumber.toString(),
+                photo_profile: updatePhotoProfile.toString(),
             };
 
 
@@ -74,23 +74,6 @@ class ProfileController {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
-
-    checkAndUpdateField(newData: string  | undefined, existingData: string) {
-        if (newData === undefined || newData === null || newData === "") {
-            return existingData;
-        } else {
-            if (typeof newData === "string") {
-                if(newData === ""){
-                    return existingData;
-                }
-                else if (newData !== existingData) {
-                    return newData;
-                } else {
-                    return existingData;
-                }
-            }
-        }
-    }    
 
 }
 

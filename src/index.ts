@@ -22,7 +22,7 @@ app.listen(port, () => {
 
 //Routes
 app.get('/', (_, res) => {
-  res.send('Welcome To Notflix qwer Service');
+  res.send('Welcome To Notflix Service');
 });
 
 /**Films */

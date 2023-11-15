@@ -1,73 +1,50 @@
 import { Request, Response } from "express";
+import checkAndUpdateField from "../../utils/checkandUpdateField";
 import axios from "axios";
 import BaseSoapController from "./BaseSoapController";
 
 class SubmissionFilmController extends BaseSoapController {
+    
+    private serviceUrl: string = `${process.env.SOAP_URL}/requestFilm`;
 
     async getAllRequestFilmById(req:Request, res:Response){
         const {id} = req.params;
-        try {
-            const header = await this.createHeader();
-            const params = await this.createParams('user_id', id);
-            const body = await this.createBody('getAllRequestFilmById', params);
-            console.log(body);
-
-            const response = await axios.post(`${process.env.SOAP_URL}/requestFilm`, body, {
-                headers: header.headers
-            });
-
-            if (response.status === 200) {
-                const parsedResult:any = await this.parseXmlResponse(response.data);
-                console.log(parsedResult);
-                const films = parsedResult['S:Envelope']['S:Body'][0]['ns2:getAllRequestFilmByIdResponse'][0]['return'];
-                if (films && films.length > 0) {
-                    const responseBody:any = [];
-                    films.forEach((film:any) => {
-                        const filmObject:any = {};
-                        Object.keys(film).forEach((key) => {
-                            filmObject[key] = film[key][0];
-                        });
-                        responseBody.push(filmObject);
-                    });
-                    console.log(responseBody);
-                    res.status(200).json({message:"Success", data: responseBody});
-                }
-            }
-        } catch (error){
-            console.error('Error calling SOAP service:', error);
-            res.status(500).send('Internal Server Error');
-        }
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'getAllRequestFilmById', 
+                this.serviceUrl,
+                {user_id: Number(id)}
+            );
+            
+            res.status(responseStatus).json({message: message, data: data});
+        },req, res);
     }
 
     async getRequestByRequestFilmId(req: Request, res:Response){
         const {id} = req.params;
-        try {
-            const header = await this.createHeader();
-            const params = await this.createParams('requestFilm_id', id);
-            const body = await this.createBody('getRequestFilmByFilmId', params);
-            console.log(body);
-
-            const response = await axios.post(`${process.env.SOAP_URL}/requestFilm`, body, {
-                headers: header.headers
-            });
-
-            if (response.status === 200) {
-                const parsedResult:any = await this.parseXmlResponse(response.data);
-                const films = parsedResult['S:Envelope']['S:Body'][0]['ns2:getRequestFilmByFilmIdResponse'][0]['return'];
-                if(films && films.length > 0 ){
-                    const responseBody: any = {}
-                    const filmFormated = films[0];
-                    Object.keys(filmFormated).forEach((key) => {
-                        responseBody[key] = filmFormated[key][0];
-                    
-                    })
-                    res.status(200).json({message:"Success", data: responseBody});
-                }
-            }
-        } catch (error){
-            console.error('Error calling SOAP service:', error);
-            res.status(500).send('Internal Server Error');
-        }
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'getRequestFilmByFilmId', 
+                this.serviceUrl,
+                {requestFilm_id: Number(id)}
+            );
+            
+            res.status(responseStatus).json({message: message, data: data});
+            console.log(data);
+        }, req, res);
+    }
+    
+    async deleteRequestFilm(req: Request, res:Response){
+        const {id} = req.params;
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'deleteRequestFilm', 
+                this.serviceUrl,
+                {requestFilm_id: Number(id)}
+            );
+            
+            res.status(responseStatus).json({message: message, data: data});
+        }, req, res);
     }
 
     async createRequestFilm(req: Request, res:Response){
@@ -90,10 +67,9 @@ class SubmissionFilmController extends BaseSoapController {
                 'duration': Number(duration)
             };
 
-            console.log(requestFilm);
             const params = await this.createManyParams(requestFilm);
             const body = await this.createBody('createRequestFilm', params);
-            console.log(body);
+
             const response = await axios.post(`${process.env.SOAP_URL}/requestFilm`, body, {
                 headers: header.headers
             });
@@ -141,13 +117,13 @@ class SubmissionFilmController extends BaseSoapController {
                 return res.status(400).json({ error: "File size too large" });
             }
     
-            const updatedTitle = this.checkAndUpdateField(title, responseBody.filmName) ?? "";
-            const updatedDescription = this.checkAndUpdateField(description, responseBody.description) ?? "";
-            const updatedFilmPath = this.checkAndUpdateField(film_path, responseBody.film_path) ?? "";
-            const updatedFilmPoster = this.checkAndUpdateField(film_poster, responseBody.film_poster) ?? "";
-            const updatedFilmHeader = this.checkAndUpdateField(film_header, responseBody.film_header) ?? "";
-            const updatedDateRelease = this.checkAndUpdateField(date_release, responseBody.date_release);
-            const updatedDuration = this.checkAndUpdateField(Number(duration),Number(responseBody.duration));
+            const updatedTitle = checkAndUpdateField(title, responseBody.filmName) ?? "";
+            const updatedDescription = checkAndUpdateField(description, responseBody.description) ?? "";
+            const updatedFilmPath = checkAndUpdateField(film_path, responseBody.film_path) ?? "";
+            const updatedFilmPoster = checkAndUpdateField(film_poster, responseBody.film_poster) ?? "";
+            const updatedFilmHeader = checkAndUpdateField(film_header, responseBody.film_header) ?? "";
+            const updatedDateRelease = checkAndUpdateField(date_release, responseBody.date_release);
+            const updatedDuration =checkAndUpdateField(Number(duration),Number(responseBody.duration));
     
             const requestFilm: Record<string, any> = {
                 'requestFilm_id': Number(id),
@@ -167,6 +143,7 @@ class SubmissionFilmController extends BaseSoapController {
             const responseUpdate = await axios.post(`${process.env.SOAP_URL}/requestFilm`, bodyUpdate, {
                 headers: header.headers
             });
+            console.log(bodyUpdate);
     
             if (responseUpdate.status === 200) {
                 const parsedResult: any = await this.parseXmlResponse(responseUpdate.data);
@@ -180,59 +157,6 @@ class SubmissionFilmController extends BaseSoapController {
         }
     }
     
-
-    checkAndUpdateField(newData: string | number | Date | undefined, existingData: string | number | Date) {
-        if (newData === undefined || newData === null || newData === "") {
-            return existingData;
-        } else {
-            if (typeof newData === "string") {
-                if(newData === ""){
-                    return existingData;
-                }
-                if (newData !== existingData) {
-                    return newData;
-                } else if(newData === existingData) {
-                    return existingData;
-                }
-            } else if (newData instanceof Date) {
-                if (newData.getDate() !== (existingData as Date).getDate()) {
-                    return newData;
-                } else {
-                    return existingData;
-                }
-            } else if (typeof newData === "number"){
-                if(newData === 0){
-                    return existingData;
-                } else if(newData !== existingData){
-                    return newData;
-                }
-            }
-        }
-    }
-    
-    async deleteRequestFilm(req: Request, res:Response){
-        const {id} = req.params;
-        try {
-            const header = await this.createHeader();
-            const params = await this.createParams('requestFilm_id', id);
-            const body = await this.createBody('deleteRequestFilm', params);
-            console.log(body);
-
-            const response = await axios.post(`${process.env.SOAP_URL}/requestFilm`, body, {
-                headers: header.headers
-            });
-
-            if (response.status === 200) {
-                const parsedResult:any = await this.parseXmlResponse(response.data);
-                const responseBody = parsedResult['S:Envelope']['S:Body'];
-                res.status(200).json(responseBody);
-            }
-        }catch (error){
-            console.error('Error calling SOAP service:', error);
-            res.status(500).send('Internal Server Error');
-        }
-    }
-
 }
 
 export default SubmissionFilmController;
