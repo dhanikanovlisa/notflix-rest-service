@@ -68,6 +68,10 @@ class BaseSoapController {
             parsedResponse.push(obj);
         });
 
+        if(parsedResponse.length===1){
+            return parsedResponse[0];
+        }
+
         return parsedResponse;
     }
 
