@@ -9,52 +9,48 @@ const filmController = new FilmController();
 const submissionFilmController = new SubmissionFilmController();
 
 
-filmRouter.get('/premium-film', wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/premium-film', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.getAllFilm(req, res);
 }));
 
-filmRouter.get('/user/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/user/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.getAllFilmByUserId(req, res);
 }));
 
-filmRouter.get('/film/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/film/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.getFilmByFilmId(req, res);
 }));
 
-filmRouter.post('/create/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.post('/create/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.createFilm(req, res);
 }));
 
-filmRouter.delete('/delete/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.delete('/film/delete/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.deleteFilm(req, res);
 }));
 
-filmRouter.put('/edit/:id', auth, wrapWithErrorHandling(async (req, res) => {
+filmRouter.put('/film/edit/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.updateFilm(req, res);
 }));
 
-filmRouter.get('/requestFilm/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/requestFilm/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await submissionFilmController.getAllRequestFilmById(req, res);
 }));
 
-filmRouter.get('/requestFilm/detail/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/requestFilm/detail/:id', auth,  wrapWithErrorHandling(async (req, res) => {
     await submissionFilmController.getRequestByRequestFilmId(req, res);
 }));
 
-filmRouter.post('/createFilmRequest', wrapWithErrorHandling(async (req, res) => {
+filmRouter.post('/createFilmRequest',auth, wrapWithErrorHandling(async (req, res) => {
     await submissionFilmController.createRequestFilm(req, res);
 }));
 
-filmRouter.delete('/requestFilm/delete/:id', wrapWithErrorHandling(async (req, res) => {
-    await submissionFilmController.deleteRequestFilm(req, res);
+filmRouter.put('/requestFilm/edit/:id', auth,  wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.updateRequestFilm(req, res); 
 }));
 
-
-
-
-
-
-
-
+filmRouter.delete('/requestFilm/delete/:id', auth, wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.deleteRequestFilm(req, res);
+}));
 
 export default filmRouter;

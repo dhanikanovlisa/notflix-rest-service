@@ -4,9 +4,7 @@ import filmRouter from './routes/FilmRoutes';
 import profileRouter from './routes/ProfileRoute';
 import authRouter from './routes/AuthRoutes';
 import genreRouter from './routes/GenreRoutes';
-import checkRouter from './routes/CheckRoutes';
-import prisma from "../src/prisma/Prisma";
-// import seed from '../prisma/seed';
+import subscriptionsRouter from './routes/SubscriptionsRoutes';
 
 var cors = require('cors');
 const app = express();
@@ -32,6 +30,8 @@ app.use('/films', filmRouter);
 app.use('/genres', genreRouter);
 /**Profile */
 app.use('/profile', profileRouter);
+/**Subscriptions */
+app.use('/subscriptions', subscriptionsRouter);
 /**Auth */
 app.use('/auth', authRouter);
 /**Check */

@@ -51,7 +51,7 @@ class FilmController {
                 res.status(404).json({ message: "Film Not Found" });
             } else {
                 const filmGenre = await this.filmGenreModel.getFilmGenreByFilmId(Number(id));
-                const genrePromises = filmGenre.map(async (genre) => {
+                const genrePromises = filmGenre.map(async (genre:any) => {
                     const genreInfo = await this.genreModel.getGenreById(genre.genre_id);
                     return genreInfo?.genre_name || '';
                 });
@@ -105,12 +105,14 @@ class FilmController {
 
             const user = await this.userModel.getUserById(Number(id_user));
             if (!user) {
+                console.log("gapunay film");
                 return res.status(404).json({ error: "Make sure this user has this film" });
             }
 
             const filmData = await this.filmModel.getFilmByFilmId(Number(id));
 
             if (!filmData) {
+                console.log("gaketemu filmny");
                 return res.status(404).json({ error: "Film not found" });
             }
 
@@ -124,7 +126,7 @@ class FilmController {
             const updatedFilmPoster = this.checkAndUpdateField(film_poster, filmData.film_poster) ?? "";
             const updatedFilmHeader = this.checkAndUpdateField(film_header, filmData.film_header) ?? "";
             const updatedDateRelease = (this.checkAndUpdateField(date_release, filmData.date_release));
-            const updatedDuration = this.checkAndUpdateField(duration, filmData.duration);
+            const updatedDuration = this.checkAndUpdateField(Number(duration), Number(filmData.duration));
 
             const updated: Film = {
                 film_id: Number(id),
@@ -156,10 +158,13 @@ class FilmController {
         if (newData === undefined || newData === null || newData === "") {
             return existingData;
         } else {
-            if (typeof newData === "string" || typeof newData === "number") {
+            if (typeof newData === "string") {
+                if(newData === ""){
+                    return existingData;
+                }
                 if (newData !== existingData) {
                     return newData;
-                } else {
+                } else if(newData === existingData) {
                     return existingData;
                 }
             } else if (newData instanceof Date) {
@@ -167,6 +172,12 @@ class FilmController {
                     return newData;
                 } else {
                     return existingData;
+                }
+            } else if (typeof newData === "number"){
+                if(newData === 0){
+                    return existingData;
+                } else if(newData !== existingData){
+                    return newData;
                 }
             }
         }

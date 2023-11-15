@@ -270,7 +270,7 @@ const seed = async () => {
     throw e;
   })
 
-
+  console.log("Selese seeding");
   await prisma.$disconnect();
 };
 

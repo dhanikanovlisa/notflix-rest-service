@@ -80,7 +80,10 @@ class ProfileController {
             return existingData;
         } else {
             if (typeof newData === "string") {
-                if (newData !== existingData) {
+                if(newData === ""){
+                    return existingData;
+                }
+                else if (newData !== existingData) {
                     return newData;
                 } else {
                     return existingData;
