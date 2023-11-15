@@ -10,12 +10,12 @@ subscriptionsRouter.get('/', auth, wrapWithErrorHandling(async (req, res) => {
     await subscriptionContorller.getAllSubscription(req, res);
 }))
 
-subscriptionsRouter.get('/:status', auth, wrapWithErrorHandling(async (req, res) => {
-    await subscriptionContorller.getSubscriptionByStatus(req, res);
+subscriptionsRouter.get('/check/:userId', auth, wrapWithErrorHandling(async (req, res) => {
+    await subscriptionContorller.checkSubscriptionStatus(req, res);
 }))
 
-subscriptionsRouter.get('/:userId', auth, wrapWithErrorHandling(async (req, res) => {
-    await subscriptionContorller.checkSubscriptionStatus(req, res);
+subscriptionsRouter.get('/:status', auth, wrapWithErrorHandling(async (req, res) => {
+    await subscriptionContorller.getSubscriptionByStatus(req, res);
 }))
 
 subscriptionsRouter.post('/request/:userId', auth, wrapWithErrorHandling(async (req, res) => {
