@@ -4,7 +4,7 @@ PostgresSQL, Prisma and Docker. This service contains management for user to sub
 allows admin premium to manage subscription and users film submission.
 
 ## Database Schemes
-![image](notflix_rest_schema.png)
+![image](screenshots/notflix_rest_schema.png)
 ## Endpoint API
 
 ## Prerequisites
