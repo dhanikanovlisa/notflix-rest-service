@@ -3,35 +3,35 @@ import axios from "axios";
 import BaseSoapController from "./BaseSoapController";
 
 class SubscriptionController extends BaseSoapController {
+    private serviceUrl: string = `${process.env.SOAP_URL}/subscription`;
+
     public async getAllSubscription(req: Request, res: Response){
-        try{
-            const header = await this.createHeader();
-            const body = await this.createBody('getAllSubscription', '');
-
-            const response = await axios.post(`${process.env.SOAP_URL}/subscription`, body, {
-                headers: header.headers
-            });
-
-            if (response.status === 200){
-                const parsedResult = await this.parseXmlResponse(response.data);
-                console.log(parsedResult);
-
-                res.status(200).json({message:"Success"});
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'getAllSubscriptions', 
+                this.serviceUrl
+            );
+            
+            if(responseStatus === 200){
+                res.status(200).json({message: message, data: data});
             }
-        }
-        catch(error){
-            console.error('Error calling SOAP service:', error);
-            res.status(500).send('Internal Server Error');
-        }
+        }, req, res);
     }
 
     public async getSubscriptionByStatus(req: Request, res: Response){
-        try{
-            
-        }
-        catch(error){
+        const {status} = req.params;
 
-        }
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'getSubscriptionByStatus',
+                this.serviceUrl,
+                {status: status.toUpperCase()}
+            )
+    
+            if(responseStatus === 200){
+                res.status(200).json({message: message, data: data});
+            }
+        }, req, res);
     }
 
     public async checkSubscriptionStatus(req: Request, res: Response){
