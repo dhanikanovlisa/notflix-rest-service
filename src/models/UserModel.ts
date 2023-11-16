@@ -1,5 +1,6 @@
 import prisma from "../prisma/Prisma";
 import { User } from "../interface";
+import HashPassword from "../utils/HashPassword";
 
 class UserModel{
     
@@ -8,14 +9,19 @@ class UserModel{
         return await prisma.user.create({data: user});
     }
     
-    /**Login */
+
     async login(username: string, password: string) {
-        return prisma.user.findFirst({
+        const user  = await prisma.user.findFirst({
             where: {
-                username,
-                password
+                username
             }
         })
+
+        if (user == null) return null;
+
+        if (await HashPassword.compare(password, user.password)){
+            return user;
+        }
     }
 
     /**Get User by User ID */

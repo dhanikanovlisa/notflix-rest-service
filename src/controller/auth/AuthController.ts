@@ -3,6 +3,7 @@ import { User } from '../../interface';
 import UserModel from '../../models/UserModel';
 import jwt from 'jsonwebtoken';
 import generateSecret from '../../utils/jwtConfig';
+import HashPassword from '../../utils/HashPassword';
 
 class AuthController{
     private userModel: UserModel;
@@ -45,7 +46,7 @@ class AuthController{
                 username,
                 email,
                 phone_number,
-                password,
+                password: await HashPassword.hash(password),
                 first_name,
                 last_name,
                 is_admin: false,
