@@ -58,16 +58,17 @@ class SubmissionFilmController extends BaseSoapController {
     }
 
     async createRequestFilm(req: Request, res:Response){
-        const {id, title, description, film_path, film_poster, film_header, date_release, duration, film_path_size, film_poster_size, film_header_size} = req.body;
+        const {user_id, title, description, film_path, film_poster, film_header, date_release, duration, film_path_size, film_poster_size, film_header_size} = req.body;
 
         try {
             if(film_path_size > 9 * 1024 * 1024 || film_poster_size > 800 * 1024 || film_header_size > 800 * 1024) {
                 return res.status(400).json({ error: "File size too large" });
             }
 
+
             const header = await this.createHeader();
             const requestFilm: Record<string, any> = {
-                'user_id': Number(id),
+                'user_id': Number(user_id),
                 'filmName': title,
                 'description': description,
                 'film_path': film_path,
