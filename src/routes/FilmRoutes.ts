@@ -20,8 +20,12 @@ filmRouter.get('/user/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.getAllFilmByUserId(req, res);
 }));
 
-filmRouter.get('/film/:id', wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/film/:filmId/user/:userId', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.getFilmByFilmId(req, res);
+}));
+
+filmRouter.get('/film/film/:id', wrapWithErrorHandling(async (req, res) => {
+    await filmController.getFilmById(req, res);
 }));
 
 filmRouter.post('/create/:id', auth, wrapWithErrorHandling(async (req, res) => {

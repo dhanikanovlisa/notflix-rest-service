@@ -56,6 +56,33 @@ class FilmController {
 
     async getFilmByFilmId(req: Request, res: Response) {
         try {
+            const { userId, filmId } = req.params;
+            const film = await this.filmModel.getFilmByFilmId(Number(filmId))
+            if (!film) {
+                res.status(404).json({ message: "Film Not Found" });
+            } else {
+                if(film.id_user === Number(userId)){
+                    const filmGenre = await this.filmGenreModel.getFilmGenreByFilmId(Number(filmId));
+                const genrePromises = filmGenre.map(async (genre:any) => {
+                    const genreInfo = await this.genreModel.getGenreById(genre.genre_id);
+                    return genreInfo?.genre_name || '';
+                });
+
+                const genres = await Promise.all(genrePromises);
+
+                res.status(200).json({ message: 'Success', data: film, genre: genres });
+                } else {
+                    res.status(401).json({ message: "Unauthorized Access" })
+                }
+            }
+        } catch (error) {
+            console.error('Error getting film:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    async getFilmById(req: Request, res: Response) {
+        try {
             const { id } = req.params;
             const film = await this.filmModel.getFilmByFilmId(Number(id))
             if (!film) {
@@ -76,6 +103,8 @@ class FilmController {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
+
+
 
     async createFilm(req: Request, res: Response) {
         try {
@@ -116,7 +145,7 @@ class FilmController {
 
             const user = await this.userModel.getUserById(Number(id_user));
             if (!user) {
-                return res.status(404).json({ error: "Make sure this user has this film" });
+                return res.status(401).json({ error: "Unauthorized access" });
             }
 
             const filmData = await this.filmModel.getFilmByFilmId(Number(id));

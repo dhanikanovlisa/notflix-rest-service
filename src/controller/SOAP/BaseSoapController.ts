@@ -59,7 +59,10 @@ class BaseSoapController {
         const methodNamespace = Object.keys(soapBody[0])[0];
 
         const responseBody = soapBody[0][methodNamespace][0]['return'];
-        if(typeof responseBody[0] === 'string'){
+        if(responseBody === undefined){
+            return [];
+        }
+        else if(typeof responseBody[0] === 'string'){
             return {sql_message: responseBody[0]};
         }else{
             const parsedResponse: object[] = [];
