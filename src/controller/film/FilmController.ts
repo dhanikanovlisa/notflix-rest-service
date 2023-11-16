@@ -20,9 +20,20 @@ class FilmController {
         this.genreModel = new GenreModel();
     }
 
+    async getFilmCount(req: Request, res: Response ){
+        try {
+            const count = await this.filmModel.getFilmCOunt();
+            res.status(200).json({ film_count: count });
+        } catch (error) {
+            console.error('Error getting film:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
     async getAllFilm(req: Request, res: Response) {
         try {
-            const allFilm = await this.filmModel.getAllFilm();
+            const {offset} = req.params;
+            const allFilm = await this.filmModel.getAllFilm(Number(offset));
             res.status(200).json({ message: 'All film', data: allFilm });
         } catch (error) {
             console.error('Error getting film:', error);

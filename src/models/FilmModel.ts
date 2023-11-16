@@ -1,11 +1,20 @@
 import prisma from "../prisma/Prisma";
 import { Film } from "../interface";
 
+const limit = 6;
+
 class FilmModel{
 
+    async getFilmCOunt(){
+        return prisma.film.count();
+    }
+
     /**Return all film for PHP Web App */
-    async getAllFilm(){
-        return prisma.film.findMany();
+    async getAllFilm(offset: number){
+        return prisma.film.findMany({
+            skip: offset*limit,
+            take: limit
+        });
     }
 
     /**Return All Film By User Premium Id */

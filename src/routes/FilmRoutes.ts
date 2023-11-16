@@ -8,8 +8,11 @@ const filmRouter = express.Router();
 const filmController = new FilmController();
 const submissionFilmController = new SubmissionFilmController();
 
+filmRouter.get('/count', wrapWithErrorHandling(async (req, res) => {
+    await filmController.getFilmCount(req, res);
+}));
 
-filmRouter.get('/premium-film', auth, wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/premium-film/:offset', wrapWithErrorHandling(async (req, res) => {
     await filmController.getAllFilm(req, res);
 }));
 
@@ -17,7 +20,7 @@ filmRouter.get('/user/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.getAllFilmByUserId(req, res);
 }));
 
-filmRouter.get('/film/:id', auth, wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/film/:id', wrapWithErrorHandling(async (req, res) => {
     await filmController.getFilmByFilmId(req, res);
 }));
 
