@@ -52,7 +52,7 @@ filmRouter.get('/requestFilm/detail/:id', auth,  wrapWithErrorHandling(async (re
     await submissionFilmController.getRequestByRequestFilmId(req, res);
 }));
 
-filmRouter.post('/films/requestFilm/create',auth, wrapWithErrorHandling(async (req, res) => {
+filmRouter.post('/requestFilm/create',auth, wrapWithErrorHandling(async (req, res) => {
     await submissionFilmController.createRequestFilm(req, res);
 }));
 
