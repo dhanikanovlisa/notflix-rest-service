@@ -17,7 +17,7 @@ filmRouter.get('/user/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.getAllFilmByUserId(req, res);
 }));
 
-filmRouter.get('/film/:id', auth, wrapWithErrorHandling(async (req, res) => {
+filmRouter.get('/film/:filmId/user/:userId', auth, wrapWithErrorHandling(async (req, res) => {
     await filmController.getFilmByFilmId(req, res);
 }));
 
