@@ -20,9 +20,20 @@ class FilmController {
         this.genreModel = new GenreModel();
     }
 
+    async getFilmCount(req: Request, res: Response ){
+        try {
+            const count = await this.filmModel.getFilmCOunt();
+            res.status(200).json({ film_count: count });
+        } catch (error) {
+            console.error('Error getting film:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
     async getAllFilm(req: Request, res: Response) {
         try {
-            const allFilm = await this.filmModel.getAllFilm();
+            const {offset} = req.params;
+            const allFilm = await this.filmModel.getAllFilm(Number(offset));
             res.status(200).json({ message: 'All film', data: allFilm });
         } catch (error) {
             console.error('Error getting film:', error);
@@ -69,6 +80,31 @@ class FilmController {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
+
+    async getFilmById(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const film = await this.filmModel.getFilmByFilmId(Number(id))
+            if (!film) {
+                res.status(404).json({ message: "Film Not Found" });
+            } else {
+                const filmGenre = await this.filmGenreModel.getFilmGenreByFilmId(Number(id));
+                const genrePromises = filmGenre.map(async (genre:any) => {
+                    const genreInfo = await this.genreModel.getGenreById(genre.genre_id);
+                    return genreInfo?.genre_name || '';
+                });
+
+                const genres = await Promise.all(genrePromises);
+
+                res.status(200).json({ message: 'Success', data: film, genre: genres });
+            }
+        } catch (error) {
+            console.error('Error getting film:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+
 
     async createFilm(req: Request, res: Response) {
         try {

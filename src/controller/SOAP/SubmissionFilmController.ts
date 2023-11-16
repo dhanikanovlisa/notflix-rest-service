@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import checkAndUpdateField from "../../utils/checkandUpdateField";
 import axios from "axios";
 import BaseSoapController from "./BaseSoapController";
+import FilmModel from "../../models/FilmModel";
 
 class SubmissionFilmController extends BaseSoapController {
-    
+    private filmModel: FilmModel = new FilmModel();
     private serviceUrl: string = `${process.env.SOAP_URL}/requestFilm`;
     async getAllRequestFilm(req:Request, res:Response){
         await this.errorHandlingWrapper(async () => {
@@ -164,6 +165,59 @@ class SubmissionFilmController extends BaseSoapController {
             console.error('Error calling SOAP service:', error);
             return res.status(500).send('Internal Server Error');
         }
+    }
+    
+    async acceptRequestFilm(req: Request, res: Response){
+        const {id} = req.params;
+        let responseStatusCode;
+        let messageData;
+        let filmDetail:any;
+
+        await this.errorHandlingWrapper(async () => {
+            await this.dispatchSoapRequest(
+                'acceptRequestFilm',
+                this.serviceUrl,
+                {requestFilm_id: Number(id)}
+            );
+
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'getRequestFilmByFilmId', 
+                this.serviceUrl,
+                {requestFilm_id: Number(id)}
+            );
+            responseStatusCode = responseStatus;
+            messageData = message;
+            filmDetail = data;
+        }, req, res);
+
+        if(responseStatusCode !== 200) return;
+        const { filmName, description, film_path, film_poster, film_header, date_release, duration, user_id } = filmDetail;
+        await this.filmModel.createFilm({
+            title: filmName,
+            description,
+            film_path,
+            film_poster,
+            film_header,
+            date_release: new Date(date_release),
+            duration: Number(duration),
+            id_user: Number(user_id)
+        });
+
+        res.status(200).json({message: messageData, data: filmDetail});
+    }
+
+    async rejectRequestFilm(req: Request, res: Response){
+        const {id} = req.params;
+
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'rejectRequestFilm',
+                this.serviceUrl,
+                {requestFilm_id: Number(id)}
+            );
+
+            res.status(responseStatus).json({message: message, data: data});
+        }, req, res);
     }
     
 }
