@@ -137,7 +137,7 @@ class SubmissionFilmController extends BaseSoapController {
             const updatedDuration =checkAndUpdateField(Number(duration),Number(responseBody.duration));
     
             const requestFilm: Record<string, any> = {
-                'requestFilm_id': Number(id),
+                'requestFilm_Id': Number(id),
                 'user_id': Number(user_id),
                 'filmName': updatedTitle,
                 'description': updatedDescription,
