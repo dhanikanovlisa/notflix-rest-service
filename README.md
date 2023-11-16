@@ -24,7 +24,8 @@ allows admin premium to manage subscription and users film submission.
 |---------------------|--------------|
 | **All Premium Films**           | /films/premium-film     |
 | **Premium Film By User Id**    | /films/user/:id      |
-| **Premium Film By FIlm Id & User Id**    | /films/film/:filmId/user/:userId      |
+| **Premium Film By Film Id & User Id**    | /films/film/:filmId/user/:userId      |
+| **Edit Film**    |/film/edit/:id     |
 | **Delete Film**    | /films/film/delete/:id      |
 | **Get All Request Film**    | /films/requestFilm     |
 | **Get Request Film by Film Id**    | /films/requestFilm/:id      |
@@ -81,3 +82,4 @@ This will start the Notflix REST Service application using Docker containers.
 | **Endpoint Film**    | 13521132     |
 | **Endpoint Subscription**    | 13521165     |
 | **Endpoint for Other Client**    | 13521132     |
+| **Endpoint Accept Request Film**    | 13521165     |
