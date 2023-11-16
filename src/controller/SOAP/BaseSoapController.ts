@@ -59,22 +59,27 @@ class BaseSoapController {
         const methodNamespace = Object.keys(soapBody[0])[0];
 
         const responseBody = soapBody[0][methodNamespace][0]['return'];
-        const parsedResponse: object[] = [];
-        if (responseBody) {
-            responseBody.forEach((el: any) => {
-                const obj: any = {};
-                Object.keys(el).forEach((key) => {
-                    obj[key] = el[key][0];
-                });
-                parsedResponse.push(obj);
-            });
-            if (parsedResponse.length === 1) {
-                return parsedResponse[0];
-            }
+        if(responseBody === undefined){
+            return [];
         }
-
-
-        return parsedResponse;
+        else if(typeof responseBody[0] === 'string'){
+            return {sql_message: responseBody[0]};
+        }else{
+            const parsedResponse: object[] = [];
+            if (responseBody) {
+                responseBody.forEach((el: any) => {
+                    const obj: any = {};
+                    Object.keys(el).forEach((key) => {
+                        obj[key] = el[key][0];
+                    });
+                    parsedResponse.push(obj);
+                });
+                if (parsedResponse.length === 1) {
+                    return parsedResponse[0];
+                }
+            }
+            return parsedResponse;
+        }
     }
 
     protected async dispatchSoapRequest(method: string, serviceUrl: string, parameters?: Record<string, any>) {
