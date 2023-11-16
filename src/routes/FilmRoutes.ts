@@ -60,4 +60,11 @@ filmRouter.delete('/requestFilm/delete/:id', auth, wrapWithErrorHandling(async (
     await submissionFilmController.deleteRequestFilm(req, res);
 }));
 
+filmRouter.put('/requestFilm/accept/:id', auth, wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.acceptRequestFilm(req, res);
+}));
+
+filmRouter.put('/requestFilm/reject/:id', auth, wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.rejectRequestFilm(req, res);
+}));
 export default filmRouter;
