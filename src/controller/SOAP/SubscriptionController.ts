@@ -45,30 +45,45 @@ class SubscriptionController extends BaseSoapController {
     }
 
     public async request(req: Request, res: Response){
-        try{
-            
-        }
-        catch(error){
+        const {userId} = req.params;
 
-        }
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'request',
+                this.serviceUrl,
+                {user_id: Number(userId)}
+            );
+
+            res.status(responseStatus).json({message: message, data: data});
+        }, req, res);
     }
 
     public async acceptRequest(req: Request, res: Response){
-        try{
-            
-        }
-        catch(error){
+        const {userId} = req.params;
 
-        }
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'acceptRequest',
+                this.serviceUrl,
+                {user_id: Number(userId)}
+            );
+
+            res.status(responseStatus).json({message: message, data: data});
+        }, req, res);
     }
     
     public async rejectRequest(req: Request, res: Response){
-        try{
-            
-        }
-        catch(error){
+        const {userId} = req.params;
 
-        }
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'rejectRequest',
+                this.serviceUrl,
+                {user_id: Number(userId)}
+            );
+
+            res.status(responseStatus).json({message: message, data: data});
+        }, req, res);
     }
 }
 
