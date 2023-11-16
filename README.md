@@ -25,7 +25,7 @@ allows admin premium to manage subscription and users film submission.
 | **All Premium Films**           | /films/premium-film     |
 | **Premium Film By User Id**    | /films/user/:id      |
 | **Premium Film By Film Id & User Id**    | /films/film/:filmId/user/:userId      |
-| **Edit Film**    |/film/edit/:id     |
+| **Edit Film**    | /films/film/edit/:id     |
 | **Delete Film**    | /films/film/delete/:id      |
 | **Get All Request Film**    | /films/requestFilm     |
 | **Get Request Film by Film Id**    | /films/requestFilm/:id      |
