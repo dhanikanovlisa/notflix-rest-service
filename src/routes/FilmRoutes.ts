@@ -33,6 +33,10 @@ filmRouter.put('/film/edit/:id', auth, wrapWithErrorHandling(async (req, res) =>
     await filmController.updateFilm(req, res);
 }));
 
+filmRouter.get('/requestFilm', auth, wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.getAllRequestFilmById(req, res);
+}));
+
 filmRouter.get('/requestFilm/:id', auth, wrapWithErrorHandling(async (req, res) => {
     await submissionFilmController.getAllRequestFilmById(req, res);
 }));
@@ -41,7 +45,7 @@ filmRouter.get('/requestFilm/detail/:id', auth,  wrapWithErrorHandling(async (re
     await submissionFilmController.getRequestByRequestFilmId(req, res);
 }));
 
-filmRouter.post('/createFilmRequest',auth, wrapWithErrorHandling(async (req, res) => {
+filmRouter.post('/films/requestFilm/create',auth, wrapWithErrorHandling(async (req, res) => {
     await submissionFilmController.createRequestFilm(req, res);
 }));
 

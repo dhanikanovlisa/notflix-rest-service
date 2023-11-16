@@ -6,6 +6,15 @@ import BaseSoapController from "./BaseSoapController";
 class SubmissionFilmController extends BaseSoapController {
     
     private serviceUrl: string = `${process.env.SOAP_URL}/requestFilm`;
+    async getAllRequestFilm(req:Request, res:Response){
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'getAllRequestFilms', 
+                this.serviceUrl
+            );
+            res.status(responseStatus).json({message: message, data: data});
+        },req, res);
+    }
 
     async getAllRequestFilmById(req:Request, res:Response){
         const {id} = req.params;
