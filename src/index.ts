@@ -1,4 +1,3 @@
-'use strict'
 import express from 'express';
 import filmRouter from './routes/FilmRoutes';
 import profileRouter from './routes/ProfileRoute';
