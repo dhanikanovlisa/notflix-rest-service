@@ -1,7 +1,7 @@
 import prisma from "../prisma/Prisma";
 import { Film } from "../interface";
 
-const limit = 6;
+const limit = 10;
 
 class FilmModel{
 
