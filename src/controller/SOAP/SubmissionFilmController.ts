@@ -17,6 +17,19 @@ class SubmissionFilmController extends BaseSoapController {
         },req, res);
     }
 
+    async getAllRequestFilmByStatus(req:Request, res:Response){
+        const {status} = req.params;
+        console.log(status);
+        await this.errorHandlingWrapper(async () => {
+            const {responseStatus, message, data} = await this.dispatchSoapRequest(
+                'getAllRequestFilmsByStatus', 
+                this.serviceUrl,
+                {Status: status.toUpperCase()}
+            );
+            res.status(responseStatus).json({message: message, data: data});
+        },req, res);
+    }
+
     async getAllRequestFilmById(req:Request, res:Response){
         const {id} = req.params;
         await this.errorHandlingWrapper(async () => {

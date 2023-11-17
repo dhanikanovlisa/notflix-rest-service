@@ -41,7 +41,11 @@ filmRouter.put('/film/edit/:id', auth, wrapWithErrorHandling(async (req, res) =>
 }));
 
 filmRouter.get('/requestFilm', auth, wrapWithErrorHandling(async (req, res) => {
-    await submissionFilmController.getAllRequestFilmById(req, res);
+    await submissionFilmController.getAllRequestFilm(req, res);
+}));
+
+filmRouter.get('/requestFilm/status/:status', auth, wrapWithErrorHandling(async (req, res) => {
+    await submissionFilmController.getAllRequestFilmByStatus(req, res);
 }));
 
 filmRouter.get('/requestFilm/:id', auth, wrapWithErrorHandling(async (req, res) => {
