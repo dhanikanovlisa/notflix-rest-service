@@ -1,25 +1,28 @@
 version: '3.3'
 services:
-  db:
+  rest-db:
+    container_name: rest-db
     image: postgres:latest
+    restart: unless-stopped
     env_file: .env
     ports:
       - 5433:5432
     volumes:
-      -  ./db:/var/lib/postgres/data
-    networks:
-      - rest-api-postgres
+      - ./migration:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 10
+      timeout: 5s
   rest-api:
+    container_name: rest-api
     build: .
     ports:
       - 8000:8000
-    env_file: .env
     volumes:
-      - ./:/app
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file: .env
     depends_on:
-      - db
-    networks:
-      - rest-api-postgres
-networks:
-  rest-api-postgres:
-    driver: bridge
+      rest-db:
+        condition: service_healthy

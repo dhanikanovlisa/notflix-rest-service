@@ -1,24 +1,44 @@
 {
-  "name": "tes",
+  "name": "notflix-rest-service",
   "version": "1.0.0",
-  "description": "",
+  "description": "Notflix rest service",
   "main": "index.js",
   "scripts": {
-    "dev": "node -r ts-node/register src/app.ts",
-    "start": "ts-node src/app.ts",
-    "build": "tsc"
+    "dev": "nodemon -L --exec ts-node ./src/index.ts",
+    "start": "node ./dist/src/index.js",
+    "build": "npx tsc"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.5.2",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "faker": "^5.5.3",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.20",
+    "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.8.8",
+    "@types/nodemon": "^1.19.5",
+    "@types/xml2js": "^0.4.14",
+    "@types/xmldom": "^0.1.34",
+    "axios": "^1.6.1",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.0.1",
+    "prisma": "^5.5.2",
+    "strong-soap": "^3.5.6",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2",
+    "xmldom": "^0.6.0"
   }
 }

@@ -3,18 +3,14 @@ FROM node:16-alpine
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY nodemon.json ./
 
-# Install dependencies
+RUN rm -rf node_modules
 RUN npm install
+RUN npm install -g nodemon
 
-# Copy the rest of the application code
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
-
-# Expose the port the app runs on
 EXPOSE 8000
 
-# Command to run the application
-CMD ["npm", "run", "dev"]
+CMD [ "./startup.sh"]
