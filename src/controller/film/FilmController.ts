@@ -45,7 +45,10 @@ class FilmController {
 
         try {
             const { id } = req.params;
-            const allFilmByUser = await this.filmModel.getAllFilmByUserId(Number(id))
+            const { page, limit } = req.query;
+            console.log(page, limit);
+            const allFilmByUser = await this.filmModel.getAllFilmByUserIdPage(Number(id), Number(page), Number(limit))
+            // const allFilmByUser = await this.filmModel.getAllFilmByUserId(Number(id))
             res.status(200).json({ message: 'Succes', data: allFilmByUser })
 
         } catch (error) {

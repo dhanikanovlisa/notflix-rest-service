@@ -24,6 +24,22 @@ class FilmModel{
         })
     }
 
+    /**Return All Film By User Id */
+    async getAllFilmByUserIdPage(id_user: number, page: number, itemsPerPage: number) {
+        try {
+            const skip = (page - 1) * itemsPerPage;
+            const allFilmByUser = await prisma.film.findMany({
+                where: { id_user: id_user },
+                skip: skip,
+                take: itemsPerPage
+            });
+            return allFilmByUser;
+        } catch (error) {
+            console.error('Error getting film by user ID and page:', error);
+            throw new Error('Internal server error');
+        }
+    }
+    
     /**Return Film by Film Id and User Id */
     async getFilmByFilmId(film_id: number) {
         return prisma.film.findUnique({
