@@ -1,4 +1,4 @@
-const bcrypt = require ('bcrypt');
+const bcrypt = require ('bcryptjs');
 const workFactor = 8;
 
 class HashPassword {
